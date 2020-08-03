@@ -14,6 +14,10 @@ module.exports = {
   },
   groups: {
     imageUploadPath: 'uploads'
-  }
+  },
+  feeds: {
+    imageUploadPath: 'uploads'
+  },
+
 
 }

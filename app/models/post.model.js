@@ -23,22 +23,22 @@ var options = {
 };
 
 const PostSchema = mongoose.Schema({
-    type: String,
+    contentType: String,
     name: String,
     detail: String,
     image: String,
     timing: Array,
     venue: String,
     entryFees: Array,
-    participants: Array,
+    participants: Array, 
     categoryAndType: String,
     caption: String,
     rate: String,
-    modelName: String,
+    model: String,
     kilometer: String,
     additionalInfo: String,
     postContent: String,
-    file: String,
+    fileName: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
