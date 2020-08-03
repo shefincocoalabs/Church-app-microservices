@@ -11,6 +11,9 @@ module.exports = {
   },
   pasters: {
     resultsPerPage: 30
+  },
+  groups: {
+    imageUploadPath: 'uploads'
   }
 
 }
