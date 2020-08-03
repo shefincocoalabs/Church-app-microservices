@@ -1,8 +1,8 @@
 module.exports = {
     development: {
-        jwt: { secret:'itasksecret'}
+        jwt: { secret:'churchsecretxyz'}
     },
     qa: {
-        jwt: { secret:'itasksecret'}
+        jwt: { secret:'churchsecretxyz'}
     },
 };

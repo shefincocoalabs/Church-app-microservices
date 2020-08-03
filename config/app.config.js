@@ -8,6 +8,9 @@ module.exports = {
   },
   users: {
     imageBase: commonStorePath + 'images/profile-images/'
-}
+  },
+  pasters: {
+    resultsPerPage: 30
+  }
 
 }

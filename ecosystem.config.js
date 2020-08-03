@@ -1,7 +1,7 @@
 module.exports = {
     apps : [
     {
-      name: 'Accounts I-task Microservices',
+      name: 'Accounts church-app Microservices',
       script: 'accounts.service.js',
       // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
       instances: 1,
@@ -11,7 +11,21 @@ module.exports = {
       //cron_restart
       env: {
         NODE_ENV: 'development',
-        port : 5001
+        port : 3001
+      }
+    },
+    {
+      name: 'Pasters church-app Microservices',
+      script: 'pasters.service.js',
+      // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
+      //cron_restart
+      env: {
+        NODE_ENV: 'development',
+        port : 3002
       }
     }
     ]

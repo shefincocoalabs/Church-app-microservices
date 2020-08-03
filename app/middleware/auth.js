@@ -6,12 +6,13 @@ const JWT_KEY = paramsConfig.development.jwt.secret;
 
 const auth = async (req, res, next) => {
     try {
-        const token = req.header('Authorization').replace('Bearer ', '')
+        const token = req.header('Authorization').replace('Bearer ', '');
         const userDetails = jwt.verify(token, JWT_KEY);
         const data = userDetails.data;
-        const userId = data.userId;
+        const userId = data.id;
         const user = await User.findOne({
-            _id: userId
+            _id: userId,
+            status: 1
         });
         if (!user) {
             throw new Error()

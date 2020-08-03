@@ -4,7 +4,6 @@
   var otpConfig = config.otp;
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
-  var moment = require('moment');
   var jwt = require('jsonwebtoken');
   const uuidv4 = require('uuid/v4');
 
