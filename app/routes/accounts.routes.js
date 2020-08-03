@@ -13,8 +13,9 @@ var storage = multer.diskStorage({
 var userImageUpload = multer({ storage: storage });
 module.exports = (app) => {
     const accounts = require('../controllers/accounts.controller.js');
-    app.post('/accounts/sign-up', accountsValidator.validator('register'), accounts.signUp);
-    app.post('/accounts/login', accounts.login);
+    app.post('/accounts/sign-up', accountsValidator.validator('signUp'), accounts.signUp);
+    app.post('/accounts/send-otp', accountsValidator.validator('sendOtp'), accounts.sendOtp);
+    app.post('/accounts/verify-otp', accountsValidator.validator('verifyOtp'), accounts.verifyOtp);
 };
 
 

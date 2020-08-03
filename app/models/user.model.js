@@ -30,6 +30,7 @@ const UserSchema = mongoose.Schema({
     parish: String,
     parishWard: String,
     bloodGroup: String,
+    isVerified: Boolean,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
