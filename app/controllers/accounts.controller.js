@@ -157,6 +157,7 @@
     try {
       var checkPhone = await Users.findOne({
         phone: phone,
+        isVerified: true,
         status: 1
       });
       if (!checkPhone) {
