@@ -175,6 +175,7 @@ exports.editProfile = async (req, res) => {
         if (preferredgroomOrBrideHeight) {
             update.preferredgroomOrBrideHeight = preferredgroomOrBrideHeight;
         }
+        update.tsModifiedAt = Date.now();
         var filter = {
             _id: id,
             createdBy: userId,
