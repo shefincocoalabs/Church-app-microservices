@@ -62,6 +62,8 @@ exports.list = async (req, res) => {
             caption: 1,
             rate: 1,
             image: 1,
+            images: 1,
+            fileName: 1,
             postContent: 1,
             fileName: 1
         };
