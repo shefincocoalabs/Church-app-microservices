@@ -25,6 +25,9 @@ module.exports = {
   buyorsell: {
     resultsPerPage: 30,
     imageUploadPath: 'uploads'
+  },
+  charity: {
+    resultsPerPage: 30
   }
 
 
