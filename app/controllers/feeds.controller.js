@@ -2,6 +2,9 @@ var Post = require('../models/post.model');
 var constant = require('../helpers/constants');
 var feedType = constant.TYPE_FEEDPOST;
 var config = require('../../config/app.config.js');
+var eventsConfig = config.events;
+var buyorsellConfig = config.buyorsell;
+var feedConfig = config.feeds;
 var feedsConfig = config.feeds;
 
 exports.create = async (req, res) => {
@@ -104,6 +107,9 @@ exports.list = async (req, res) => {
         }
         res.status(200).send({
             success: 1,
+            postFeedImageBase: feedsConfig.imageBase,
+            buyorsellImageBase: buyorsellConfig.imageBase,
+            eventsImageBase: eventsConfig.imageBase,
             pagination: pagination,
             items: listPosts
         });
