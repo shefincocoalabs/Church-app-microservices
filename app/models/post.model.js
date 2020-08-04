@@ -23,6 +23,7 @@ var options = {
 
 const PostSchema = mongoose.Schema({
     contentType: String,
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     name: String,
     detail: String,
     image: String,
@@ -32,6 +33,7 @@ const PostSchema = mongoose.Schema({
     participants: Array, 
     categoryAndType: String,
     caption: String,
+    images: Array,
     rate: String,
     model: String,
     kilometer: String,

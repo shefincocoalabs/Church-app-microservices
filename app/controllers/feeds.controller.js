@@ -5,6 +5,8 @@ var config = require('../../config/app.config.js');
 var feedsConfig = config.feeds;
 
 exports.create = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
     var file = req.file;
     if (!file) {
         return res.status(400).send({

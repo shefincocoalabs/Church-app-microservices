@@ -6,6 +6,8 @@ var config = require('../../config/app.config.js');
 var eventConfig = config.events;
 
 exports.list = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
     var params = req.query;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
@@ -55,6 +57,8 @@ exports.list = async (req, res) => {
 }
 
 exports.detail = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
     var id = req.params.id;
     var isValidId = ObjectId.isValid(id);
     if (!isValidId) {

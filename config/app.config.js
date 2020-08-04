@@ -21,6 +21,10 @@ module.exports = {
   },
   events: {
     resultsPerPage: 30
+  },
+  buyorsell: {
+    resultsPerPage: 30,
+    imageUploadPath: 'uploads'
   }
 
 
