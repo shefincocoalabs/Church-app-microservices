@@ -19,6 +19,9 @@ module.exports = {
     resultsPerPage: 30,
     imageUploadPath: 'uploads'
   },
+  events: {
+    resultsPerPage: 30
+  }
 
 
 }

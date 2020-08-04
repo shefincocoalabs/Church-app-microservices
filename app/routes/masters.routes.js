@@ -1,5 +1,3 @@
-const auth = require('../middleware/auth.js');
-
 module.exports = (app) => {
     const masters = require('../controllers/masters.controller');
     app.get('/church/list', masters.churchList);

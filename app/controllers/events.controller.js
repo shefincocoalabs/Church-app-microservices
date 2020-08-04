@@ -1,27 +1,36 @@
-var Paster = require('../models/paster.model');
+var Post = require('../models/post.model');
+var constant = require('../helpers/constants');
+var eventType = constant.TYPE_EVENT;
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
-var pasterConfig = config.pasters;
+var eventConfig = config.events;
 
-// *** Pasters List ***
 exports.list = async (req, res) => {
-    var identity = req.identity.data;
-    var userId = identity.id;
     var params = req.query;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
-    var perPage = Number(params.perPage) || pasterConfig.resultsPerPage;
-    perPage = perPage > 0 ? perPage : pasterConfig.resultsPerPage;
+    var perPage = Number(params.perPage) || eventConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : eventConfig.resultsPerPage;
     var offset = (page - 1) * perPage;
     var pageParams = {
         skip: offset,
         limit: perPage
     };
     try {
-        var pastersList = await Paster.find({}, {}, pageParams).limit(perPage).sort({
+        var filter = {
+            contentType: eventType,
+            status: 1
+        };
+        var projection = {
+            name: 1,
+            image: 1,
+            timing: 1,
+            venue: 1
+        };
+        var listEvents = await Post.find(filter, projection, pageParams).limit(perPage).sort({
             'tsCreatedAt': -1
         });
-        var itemsCount = await Paster.countDocuments();
+        var itemsCount = await Post.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -35,8 +44,8 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
-            items: pastersList
-        })
+            items: listEvents
+        });
     } catch (err) {
         res.status(500).send({
             success: 0,
@@ -45,8 +54,7 @@ exports.list = async (req, res) => {
     }
 }
 
-// *** Paster Detail ***
-exports.detail = async(req, res) => {
+exports.detail = async (req, res) => {
     var id = req.params.id;
     var isValidId = ObjectId.isValid(id);
     if (!isValidId) {
@@ -61,16 +69,25 @@ exports.detail = async(req, res) => {
         res.send(responseObj);
         return;
     }
-
     try {
         var filter = {
             _id: id,
             status: 1
         };
-        var pasterDetail = await Paster.findOne(filter);
+        var projection = {
+            name: 1,
+            detail: 1,
+            image: 1,
+            timing: 1,
+            venue: 1,
+            entryFees: 1,
+            participants: 1,
+            categoryAndType: 1,
+        };
+        var eventDetail = await Post.findOne(filter, projection);
         res.status(200).send({
             success: 1,
-            item: pasterDetail
+            item: eventDetail
         });
     } catch (err) {
         res.status(500).send({
