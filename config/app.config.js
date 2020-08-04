@@ -16,6 +16,7 @@ module.exports = {
     imageUploadPath: 'uploads'
   },
   feeds: {
+    resultsPerPage: 30,
     imageUploadPath: 'uploads'
   },
 

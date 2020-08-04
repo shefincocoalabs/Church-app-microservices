@@ -44,4 +44,5 @@ const PostSchema = mongoose.Schema({
     tsModifiedAt: Number
 
 }, options);
+
 module.exports = mongoose.model('Post', PostSchema, 'Posts');
