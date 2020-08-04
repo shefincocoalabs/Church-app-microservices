@@ -1,5 +1,6 @@
 var Charity = require('../models/charity.model');
 var config = require('../../config/app.config.js');
+var ObjectId = require('mongoose').Types.ObjectId;
 var charityConfig = config.charity;
 
 exports.list = async (req, res) => {
@@ -54,6 +55,19 @@ exports.list = async (req, res) => {
 
 exports.detail = async (req, res) => {
     var id = req.params.id;
+    var isValidId = ObjectId.isValid(id);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
     try {
         var filter = {
             _id: id,

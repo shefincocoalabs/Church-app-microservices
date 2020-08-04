@@ -28,6 +28,9 @@ module.exports = {
   },
   charity: {
     resultsPerPage: 30
+  },
+  matrimony: {
+    imageUploadPath: 'uploads'
   }
 
 
