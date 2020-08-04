@@ -7,40 +7,40 @@ module.exports = {
     expirySeconds: 2 * 60
   },
   users: {
-    imageBase: commonStorePath + '/users/'
+    imageBase: commonStorePath + 'users/'
   },
   pasters: {
     resultsPerPage: 30
   },
   groups: {
-    imageBase: commonStorePath + '/groups/',
+    imageBase: commonStorePath + 'groups/',
     // imageUploadPath: 'uploads'
     imageUploadPath: '/var/www/html/church-app-images/groups/'
   },
   feeds: {
     resultsPerPage: 30,
-    imageBase: commonStorePath + '/feeds/',
+    imageBase: commonStorePath + 'feeds/',
     // imageUploadPath: 'uploads'
     imageUploadPath: '/var/www/html/church-app-images/feeds/'
   },
   events: {
     resultsPerPage: 30,
-    imageBase: commonStorePath + '/events/',
+    imageBase: commonStorePath + 'events/',
     imageUploadPath: '/var/www/html/church-app-images/events/'
   },
   buyorsell: {
     resultsPerPage: 30,
-    imageBase: commonStorePath + '/buyorsell/',
+    imageBase: commonStorePath + 'buyorsell/',
     // imageUploadPath: 'uploads'
     imageUploadPath: '/var/www/html/church-app-images/buyorsell/'
   },
   charity: {
     resultsPerPage: 30,
-    imageBase: commonStorePath + '/charity/',
+    imageBase: commonStorePath + 'charity/',
     imageUploadPath: '/var/www/html/church-app-images/charity/'
   },
   matrimony: {
-    imageBase: commonStorePath + '/matrimony/',
+    imageBase: commonStorePath + 'matrimony/',
     // imageUploadPath: 'uploads',
     imageUploadPath: '/var/www/html/church-app-images/matrimony/'
   }
