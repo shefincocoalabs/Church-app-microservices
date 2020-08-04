@@ -1,4 +1,4 @@
-var commonStorePath = 'http://172.104.61.150/I-task/'
+var commonStorePath = 'http://172.105.33.226/church-app-images/'
 module.exports = {
   gateway: {
     url: "http://localhost:5000"
@@ -7,30 +7,42 @@ module.exports = {
     expirySeconds: 2 * 60
   },
   users: {
-    imageBase: commonStorePath + 'images/profile-images/'
+    imageBase: commonStorePath + '/users/'
   },
   pasters: {
     resultsPerPage: 30
   },
   groups: {
-    imageUploadPath: 'uploads'
+    imageBase: commonStorePath + '/groups/',
+    // imageUploadPath: 'uploads'
+    imageUploadPath: '/var/www/html/church-app-images/groups/'
   },
   feeds: {
     resultsPerPage: 30,
-    imageUploadPath: 'uploads'
+    imageBase: commonStorePath + '/feeds/',
+    // imageUploadPath: 'uploads'
+    imageUploadPath: '/var/www/html/church-app-images/feeds/'
   },
   events: {
-    resultsPerPage: 30
+    resultsPerPage: 30,
+    imageBase: commonStorePath + '/events/',
+    imageUploadPath: '/var/www/html/church-app-images/events/'
   },
   buyorsell: {
     resultsPerPage: 30,
-    imageUploadPath: 'uploads'
+    imageBase: commonStorePath + '/buyorsell/',
+    // imageUploadPath: 'uploads'
+    imageUploadPath: '/var/www/html/church-app-images/buyorsell/'
   },
   charity: {
-    resultsPerPage: 30
+    resultsPerPage: 30,
+    imageBase: commonStorePath + '/charity/',
+    imageUploadPath: '/var/www/html/church-app-images/charity/'
   },
   matrimony: {
-    imageUploadPath: 'uploads'
+    imageBase: commonStorePath + '/matrimony/',
+    // imageUploadPath: 'uploads',
+    imageUploadPath: '/var/www/html/church-app-images/matrimony/'
   }
 
 
