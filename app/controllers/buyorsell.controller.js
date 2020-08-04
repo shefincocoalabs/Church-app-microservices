@@ -118,6 +118,7 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
+            imageBase: buyorsellConfig.imageBase,
             items: listBuyorSell
         });
     } catch (err) {
@@ -151,6 +152,7 @@ exports.detail = async (req, res) => {
         });
         res.status(200).send({
             success: 1,
+            imageBase: buyorsellConfig.imageBase,
             item: productDetail
         })
     } catch (err) {

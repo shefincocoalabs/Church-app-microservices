@@ -35,6 +35,7 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
+            imageBase: pasterConfig.imageBase,
             items: pastersList
         })
     } catch (err) {
@@ -70,6 +71,7 @@ exports.detail = async(req, res) => {
         var pasterDetail = await Paster.findOne(filter);
         res.status(200).send({
             success: 1,
+            imageBase: pasterConfig.imageBase,
             item: pasterDetail
         });
     } catch (err) {

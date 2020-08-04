@@ -1,5 +1,8 @@
 var Group = require('../models/group.model');
 var User = require('../models/user.model');
+var config = require('../../config/app.config.js');
+var groupConfig = config.groups;
+
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -58,6 +61,7 @@ exports.list = async (req, res) => {
         })
         res.status(200).send({
             success: 1,
+            imageBase: groupConfig.imageBase,
             items: groupsList
         })
     } catch (err) {

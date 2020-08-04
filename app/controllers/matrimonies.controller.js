@@ -1,5 +1,7 @@
 var Matrimony = require('../models/matrimony.model');
 var ObjectId = require('mongoose').Types.ObjectId;
+var config = require('../../config/app.config.js');
+var matrimonyConfig = config.matrimony;
 
 exports.create = async (req, res) => {
     var identity = req.identity.data;

@@ -43,6 +43,7 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
+            imageBase: charityConfig.imageBase,
             items: listCharities
         });
     } catch (err) {
@@ -84,6 +85,7 @@ exports.detail = async (req, res) => {
         var charityDetail = await Charity.findOne(filter, projection);
         res.status(200).send({
             success: 1,
+            imageBase: charityConfig.imageBase,
             item: charityDetail
         });
     } catch (err) {

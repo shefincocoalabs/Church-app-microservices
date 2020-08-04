@@ -46,6 +46,7 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
+            imageBase: eventConfig.imageBase,
             items: listEvents
         });
     } catch (err) {
@@ -91,6 +92,7 @@ exports.detail = async (req, res) => {
         var eventDetail = await Post.findOne(filter, projection);
         res.status(200).send({
             success: 1,
+            imageBase: eventConfig.imageBase,
             item: eventDetail
         });
     } catch (err) {

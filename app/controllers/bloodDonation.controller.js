@@ -1,6 +1,7 @@
 var BloodDonation = require('../models/bloodDonation.model');
 var Users = require('../models/user.model');
-
+var config = require('../../config/app.config.js');
+var userConfig = config.users;
 exports.list = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -27,6 +28,7 @@ exports.list = async (req, res) => {
         });
         res.status(200).send({
             success: 1,
+            imageBase: userConfig.imageBase,
             userData: userData,
             items: bloodDonationList
         })
