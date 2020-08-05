@@ -40,9 +40,10 @@ module.exports = {
     imageUploadPath: '/var/www/html/church-app-images/charity/'
   },
   matrimony: {
+    resultsPerPage: 30,
     imageBase: commonStorePath + 'matrimony/',
-    // imageUploadPath: 'uploads',
-    imageUploadPath: '/var/www/html/church-app-images/matrimony/'
+    imageUploadPath: 'uploads',
+    // imageUploadPath: '/var/www/html/church-app-images/matrimony/'
   }
 
 

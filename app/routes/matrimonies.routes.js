@@ -17,4 +17,9 @@ module.exports = (app) => {
     app.post('/matrimonies/create', auth, matrimonyValidator.validator('create'), matrimony.create);
     app.get('/matrimonies/:id/get-profile', auth, matrimony.getProfile);
     app.patch('/matrimonies/:id/edit-profile', auth, imageUpload.single('image'), matrimony.editProfile);
+    app.get('/matrimonies/matches', auth, matrimony.getMatches);
+    app.post('/matrimonies/send-request', auth, matrimony.sendRequest);
+    app.get('/matrimonies/my-requests', auth, matrimony.myRequests);
+    app.patch('/matrimonies/requeest/accept', auth, matrimony.acceptRequest);
+    app.patch('/matrimonies/request/ignore', auth, matrimony.ignoreRequest);
 };

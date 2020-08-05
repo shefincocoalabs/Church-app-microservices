@@ -1,4 +1,6 @@
 var Matrimony = require('../models/matrimony.model');
+var SendRequest = require('../models/sendRequests.model');
+var IncomingRequest = require('../models/incomingRequests.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var matrimonyConfig = config.matrimony;
@@ -20,6 +22,16 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     try {
+        var checkAccount = await Matrimony.findOne({
+            createdBy: userId,
+            status: 1
+        });
+        if (checkAccount) {
+            return res.status(400).send({
+                success: 0,
+                message: 'You have already an account'
+            })
+        }
         const newMatrimony = new Matrimony({
             name: name,
             gender: gender,
@@ -194,4 +206,156 @@ exports.editProfile = async (req, res) => {
             message: err.message
         })
     }
+}
+
+exports.getMatches = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || matrimonyConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : matrimonyConfig.resultsPerPage;
+    var offset = (page - 1) * perPage;
+    var pageParams = {
+        skip: offset,
+        limit: perPage
+    };
+    try {
+        var filter = {
+            status: 1
+        };
+        var projection = {
+            name: 1,
+            image: 1,
+            profession: 1,
+            workPlace: 1,
+            age: 1,
+            height: 1,
+            nativePlace: 1
+        };
+        var matchesList = await Matrimony.find(filter, projection, pageParams).limit(perPage).sort({
+            'tsCreatedAt': -1
+        });
+        var itemsCount = await Matrimony.countDocuments(filter);
+        totalPages = itemsCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages
+        }
+        res.status(200).send({
+            success: 1,
+            imageBase: matrimonyConfig.imageBase,
+            pagination: pagination,
+            items: matchesList
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.sendRequest = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var matrimonyId = req.body.matrimonyId;
+    try {
+        const newRequestSent = new SendRequest({
+            userId: userId,
+            matrimonyId: matrimonyId,
+            isAccepted: false,
+            isRejected: false,
+            status: 1,
+            tsCreatedAt: Date.now(),
+            tsModifiedAt: null
+        });
+        const newIncomingRequest = new IncomingRequest({
+            userId: userId,
+            matrimonyId: matrimonyId,
+            isAccepted: false,
+            isRejected: false,
+            status: 1,
+            tsCreatedAt: Date.now(),
+            tsModifiedAt: null
+        });
+        var saveNewRequestSent = newRequestSent.save();
+        var saveNewIncomingRequest = newIncomingRequest.save();
+        res.status(200).send({
+            success: 1,
+            message: 'Your interest has been sent successfully'
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.myRequests = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    try {
+        var filter = {
+            userId: userId,
+            status: 1
+        };
+        var projection = {
+            matrimonyId: 1
+        };
+        var myRequestsList = await IncomingRequest.find(filter, projection).populate({
+            path: 'matrimonyId',
+            select: 'name profession age height nativePlace workingPlace'
+        });
+        res.status(200).send({
+            success: 1,
+            items: myRequestsList
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.acceptRequest = (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var matrimonyId = req.body.matrimonyId;
+    try {
+        var updateSendRequest = await SendRequest.update({
+            userId: userId,
+            matrimonyId: matrimonyId,
+            status: 1
+        }, {
+            isAccepted: true
+        });
+        var updateIncomingRequest = await IncomingRequest.update({
+            matrimonyId: matrimonyId,
+            status: 1
+        }, {
+            isAccepted: true
+        });
+        res.status(200).send({
+            success: 1,
+            message: 'Request accepted successfully'
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.ignoreRequest = (req, res) => {
+
 }
