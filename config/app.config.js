@@ -1,7 +1,7 @@
 var commonStorePath = 'http://172.105.33.226/church-app-images/'
 module.exports = {
   gateway: {
-    url: "http://localhost:5000"
+    url: "http://localhost:3000"
   },
   otp: {
     expirySeconds: 2 * 60
