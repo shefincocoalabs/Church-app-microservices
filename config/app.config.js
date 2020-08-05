@@ -7,15 +7,17 @@ module.exports = {
     expirySeconds: 2 * 60
   },
   users: {
-    imageBase: commonStorePath + 'users/'
+    imageBase: commonStorePath + 'users/',
+     // imageUploadPath: 'uploads'
+     imageUploadPath: '/var/www/html/church-app-images/users/'
   },
   pasters: {
     resultsPerPage: 30
   },
   groups: {
     imageBase: commonStorePath + 'groups/',
-    imageUploadPath: 'uploads'
-    // imageUploadPath: '/var/www/html/church-app-images/groups/'
+    // imageUploadPath: 'uploads'
+    imageUploadPath: '/var/www/html/church-app-images/groups/'
   },
   feeds: {
     resultsPerPage: 30,
@@ -42,8 +44,8 @@ module.exports = {
   matrimony: {
     resultsPerPage: 30,
     imageBase: commonStorePath + 'matrimony/',
-    imageUploadPath: 'uploads',
-    // imageUploadPath: '/var/www/html/church-app-images/matrimony/'
+    // imageUploadPath: 'uploads',
+    imageUploadPath: '/var/www/html/church-app-images/matrimony/'
   }
 
 
