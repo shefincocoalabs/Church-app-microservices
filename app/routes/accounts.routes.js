@@ -16,6 +16,7 @@ module.exports = (app) => {
     app.post('/accounts/sign-up', accountsValidator.validator('signUp'), accounts.signUp);
     app.post('/accounts/send-otp', accountsValidator.validator('sendOtp'), accounts.sendOtp);
     app.post('/accounts/verify-otp', accountsValidator.validator('verifyOtp'), accounts.verifyOtp);
+    app.get('/accounts/profile', auth, accounts.profile);
 };
 
 

@@ -3,15 +3,16 @@ var User = require('../models/user.model');
 var config = require('../../config/app.config.js');
 var groupConfig = config.groups;
 var usersConfig = config.users;
+
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
-    if(!file) {
-       return res.status(400).send({
-           success: 0, 
-           message: 'image is required'
-       })
+    if (!file) {
+        return res.status(400).send({
+            success: 0,
+            message: 'image is required'
+        })
     }
     var fileName = file.filename;
     var name = req.body.name;
@@ -127,4 +128,3 @@ exports.membersList = async (req, res) => {
         })
     }
 }
-

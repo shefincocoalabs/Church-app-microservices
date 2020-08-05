@@ -1,7 +1,11 @@
   const Users = require('../models/user.model');
   const Otp = require('../models/otp.model');
+  const Church = require('../models/church.model');
+  const Parish = require('../models/parish.model');
+  const ParishWard = require('../models/parishWard.model');
   const config = require('../../config/app.config.js');
   var otpConfig = config.otp;
+  var usersConfig = config.users;
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var jwt = require('jsonwebtoken');
@@ -174,6 +178,47 @@
         message: 'OTP is sent to your registered phone number for verification',
         item: otpResponse
       });
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
+  exports.profile = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    try {
+      var filter = {
+        _id: userId,
+        status: 1
+      };
+      var projection = {
+        name: 1,
+        email: 1,
+        phone: 1,
+        image: 1,
+        address: 1,
+        parish: 1,
+        parishWard: 1,
+        bloodGroup: 1
+      };
+      var profileData = await Users.findOne(filter, projection).populate([{
+        path: 'church',
+        select: 'name'
+      }, {
+        path: 'parish',
+        select: 'name'
+      }, {
+        path: 'parishWard',
+        select: 'name'
+      }])
+      res.status(200).send({
+        success: 1,
+        imageBase: usersConfig.imageBase,
+        item: profileData
+      })
     } catch (err) {
       res.status(500).send({
         success: 0,
