@@ -22,6 +22,7 @@
     try {
       var filter = {
         phone: phone,
+        isVerified: true,
         status: 1
       }
       var checkPhone = await Users.findOne(filter);
