@@ -14,7 +14,7 @@ var storage = multer.diskStorage({
 var imageUpload = multer({ storage: storage });
 module.exports = (app) => {
     const matrimony = require('../controllers/matrimonies.controller');
-    app.post('/matrimony/create', auth, matrimonyValidator.validator('create'), matrimony.create);
-    app.get('/matrimony/:id/get-profile', auth, matrimony.getProfile);
-    app.patch('/matrimony/:id/edit-profile', auth, imageUpload.single('image'), matrimony.editProfile);
+    app.post('/matrimonies/create', auth, matrimonyValidator.validator('create'), matrimony.create);
+    app.get('/matrimonies/:id/get-profile', auth, matrimony.getProfile);
+    app.patch('/matrimonies/:id/edit-profile', auth, imageUpload.single('image'), matrimony.editProfile);
 };
