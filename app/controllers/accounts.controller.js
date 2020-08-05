@@ -36,6 +36,7 @@
       var newUser = new Users({
         name: name,
         email: email,
+        image: '',
         phone: phone,
         address: address,
         church: church,

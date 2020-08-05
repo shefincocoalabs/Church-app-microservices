@@ -350,6 +350,9 @@ exports.acceptRequest = async (req, res) => {
             status: 1
         }, {
             isAccepted: true
+        }, {
+            new: true,
+            useFindAndModify: false
         });
         var updateIncomingRequest = await IncomingRequest.update({
             userMatrimonyId: senderMatrimonyId,
@@ -357,6 +360,9 @@ exports.acceptRequest = async (req, res) => {
             status: 1
         }, {
             isAccepted: true
+        }, {
+            new: true,
+            useFindAndModify: false
         });
         res.status(200).send({
             success: 1,
@@ -383,6 +389,9 @@ exports.ignoreRequest = async (req, res) => {
             status: 1
         }, {
             isRejected: true
+        }, {
+            new: true,
+            useFindAndModify: false
         });
         var updateIncomingRequest = await IncomingRequest.update({
             userMatrimonyId: senderMatrimonyId,
@@ -390,6 +399,9 @@ exports.ignoreRequest = async (req, res) => {
             status: 1
         }, {
             isRejected: true
+        }, {
+            new: true,
+            useFindAndModify: false
         });
         res.status(200).send({
             success: 1,

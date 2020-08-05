@@ -14,5 +14,6 @@ var groupImageUpload = multer({ storage: storage });
 module.exports = (app) => {
     const groups = require('../controllers/groups.controller');
     app.get('/groups/list', auth, groups.list);
+    app.get('/groups/memberslist', auth, groups.membersList);
     app.post('/groups/create', auth ,groupImageUpload.single('image'), groupsValidator.validator('createGroup'), groups.create);
 };

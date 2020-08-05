@@ -14,8 +14,8 @@ module.exports = {
   },
   groups: {
     imageBase: commonStorePath + 'groups/',
-    // imageUploadPath: 'uploads'
-    imageUploadPath: '/var/www/html/church-app-images/groups/'
+    imageUploadPath: 'uploads'
+    // imageUploadPath: '/var/www/html/church-app-images/groups/'
   },
   feeds: {
     resultsPerPage: 30,
