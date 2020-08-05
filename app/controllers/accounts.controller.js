@@ -227,6 +227,70 @@
     }
   }
 
+  exports.editProfile = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.body;
+    var name = params.name;
+    var email = params.email;
+    var phone = params.phone;
+    var address = params.address;
+    var church = params.church;
+    var parish = params.parish;
+    var parishWard = params.parishWard;
+    var bloodGroup = params.bloodGroup;
+    try {
+      if (Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+          success: 0,
+          message: 'Nothing to update'
+        })
+      }
+      var update = {};
+      if (name) {
+        update.name = name;
+      }
+      if (email) {
+        update.email = email;
+      }
+      if (phone) {
+        update.phone = phone;
+      }
+      if (address) {
+        update.address = address;
+      }
+      if (church) {
+        update.church = church;
+      }
+      if (parish) {
+        update.parish = parish;
+      }
+      if (parishWard) {
+        update.parishWard = parishWard;
+      }
+      if (bloodGroup) {
+        update.bloodGroup = bloodGroup;
+      }
+      var filter = {
+        _id: userId,
+        status: 1
+      };
+      var updateUser = await Users.update(filter, update, {
+        new: true,
+        useFindAndModify: false
+      });
+      res.status(200).send({
+        success: 1,
+        message: 'Profile updated successfully'
+      })
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
   async function otp(phone) {
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();

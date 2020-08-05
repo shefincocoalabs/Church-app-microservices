@@ -195,7 +195,10 @@ exports.editProfile = async (req, res) => {
             createdBy: userId,
             status: 1
         };
-        var updateProfile = await Matrimony.update(filter, update);
+        var updateProfile = await Matrimony.update(filter, update, {
+            new: true,
+            useFindAndModify: false
+        });
         res.status(200).send({
             success: 1,
             message: 'Profile data updated successfully'
