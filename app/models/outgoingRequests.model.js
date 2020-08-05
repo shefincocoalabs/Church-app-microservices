@@ -22,9 +22,10 @@ var options = {
     }
 };
 
-const SendRequestSchema = mongoose.Schema({
-    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    matrimonyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
+const OutgoingRequestSchema = mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    userMatrimonyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
+    senderMatrimonyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
     isAccepted: Boolean,
     isRejected: Boolean,
     status: Number,
@@ -32,4 +33,4 @@ const SendRequestSchema = mongoose.Schema({
     tsModifiedAt: Number
 
 }, options);
-module.exports = mongoose.model('SendRequest', SendRequestSchema, 'SendRequests');
+module.exports = mongoose.model('OutgoingRequest', OutgoingRequestSchema, 'OutgoingRequests');

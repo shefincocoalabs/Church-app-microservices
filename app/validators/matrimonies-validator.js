@@ -29,5 +29,69 @@ exports.validator = (method) => {
                 }
             ]
         }
+        case 'getMatches': {
+            return [
+                check('matrimonyId', 'MatrimonyId is required').notEmpty(),
+                check('age', 'Age is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
+        case 'accept': {
+            return [
+                check('userMatrimonyId', 'MatrimonyId of user is required').notEmpty(),
+                check('senderMatrimonyId', 'MatrimonyId of sender is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
+        case 'reject': {
+            return [
+                check('userMatrimonyId', 'MatrimonyId of user is required').notEmpty(),
+                check('senderMatrimonyId', 'MatrimonyId of sender is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
+        case 'sendRequest': {
+            return [
+                check('userMatrimonyId', 'MatrimonyId of user is required').notEmpty(),
+                check('senderMatrimonyId', 'MatrimonyId of sender is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
     }
 }

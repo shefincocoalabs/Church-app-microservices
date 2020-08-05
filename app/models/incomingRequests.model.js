@@ -24,7 +24,8 @@ var options = {
 
 const IncomingRequestSchema = mongoose.Schema({
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    matrimonyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
+    userMatrimonyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
+    senderMatrimonyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Matrimony'},
     isAccepted: Boolean,
     isRejected: Boolean,
     status: Number,

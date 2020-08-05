@@ -1,5 +1,5 @@
 var Matrimony = require('../models/matrimony.model');
-var SendRequest = require('../models/sendRequests.model');
+var OutgoingRequest = require('../models/outgoingRequests.model');
 var IncomingRequest = require('../models/incomingRequests.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
@@ -221,8 +221,16 @@ exports.getMatches = async (req, res) => {
         skip: offset,
         limit: perPage
     };
+    var matrimonyId = req.body.matrimonyId;
+    var gender = req.body.gender;
+    if (gender == 'female') {
+        gender = 'male'
+    } else {
+        gender = 'female'
+    }
     try {
         var filter = {
+            gender: gender,
             status: 1
         };
         var projection = {
@@ -265,11 +273,13 @@ exports.getMatches = async (req, res) => {
 exports.sendRequest = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var matrimonyId = req.body.matrimonyId;
+    var userMatrimonyId = req.body.userMatrimonyId;
+    var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
-        const newRequestSent = new SendRequest({
+        const newRequestSent = new OutgoingRequest({
             userId: userId,
-            matrimonyId: matrimonyId,
+            userMatrimonyId: userMatrimonyId,
+            senderMatrimonyId: senderMatrimonyId,
             isAccepted: false,
             isRejected: false,
             status: 1,
@@ -278,7 +288,8 @@ exports.sendRequest = async (req, res) => {
         });
         const newIncomingRequest = new IncomingRequest({
             userId: userId,
-            matrimonyId: matrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             isAccepted: false,
             isRejected: false,
             status: 1,
@@ -326,20 +337,23 @@ exports.myRequests = async (req, res) => {
     }
 }
 
-exports.acceptRequest = (req, res) => {
+exports.acceptRequest = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var matrimonyId = req.body.matrimonyId;
+    var userMatrimonyId = req.body.userMatrimonyId;
+    var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
-        var updateSendRequest = await SendRequest.update({
+        var updateSendRequest = await OutgoingRequest.update({
             userId: userId,
-            matrimonyId: matrimonyId,
+            userMatrimonyId: userMatrimonyId,
+            senderMatrimonyId: senderMatrimonyId,
             status: 1
         }, {
             isAccepted: true
         });
         var updateIncomingRequest = await IncomingRequest.update({
-            matrimonyId: matrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isAccepted: true
@@ -356,6 +370,35 @@ exports.acceptRequest = (req, res) => {
     }
 }
 
-exports.ignoreRequest = (req, res) => {
-
+exports.ignoreRequest = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var userMatrimonyId = req.body.userMatrimonyId;
+    var senderMatrimonyId = req.body.senderMatrimonyId;
+    try {
+        var updateSendRequest = await OutgoingRequest.update({
+            userId: userId,
+            userMatrimonyId: userMatrimonyId,
+            senderMatrimonyId: senderMatrimonyId,
+            status: 1
+        }, {
+            isRejected: true
+        });
+        var updateIncomingRequest = await IncomingRequest.update({
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
+            status: 1
+        }, {
+            isRejected: true
+        });
+        res.status(200).send({
+            success: 1,
+            message: 'Request ignored successfully'
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
 }
