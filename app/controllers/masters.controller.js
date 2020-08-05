@@ -4,7 +4,13 @@ var ParishWard = require('../models/parishWard.model');
 
 exports.churchList = async (req, res) => {
     try {
-        var listChurch = await Church.find().sort({
+        var filter = {
+            status: 1
+        };
+        var projection = {
+            name: 1
+        };
+        var listChurch = await Church.find(filter,projection).sort({
             'tsCreatedAt': -1
         });
         res.status(200).send({
