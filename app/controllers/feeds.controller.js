@@ -96,6 +96,28 @@ exports.list = async (req, res) => {
         listPosts = await Post.find(filter, projection, pageParams).limit(perPage).sort({
             'tsCreatedAt': -1
         });
+        var postContentArray = [];
+        for (var i = 0; i < listPosts.length; i++) {
+            var postContent = {};
+            if (listPosts[i].contentType == 'buy/sell') {
+                postContent.id = listPosts[i].id;
+                postContent.contentType = listPosts[i].contentType;
+                postContent.caption = listPosts[i].caption;
+                postContent.rate = listPosts[i].rate;
+                postContent.images = listPosts[i].images;
+            } else if (listPosts[i].contentType == 'events') {
+                postContent.id = listPosts[i].id;
+                postContent.contentType = listPosts[i].contentType;
+                postContent.name = listPosts[i].name;
+                postContent.image = listPosts[i].image;
+            } else {
+                postContent.id = listPosts[i].id;
+                postContent.contentType = listPosts[i].contentType;
+                postContent.postContent = listPosts[i].postContent;
+                postContent.fileName = listPosts[i].fileName;
+            }
+            postContentArray.push(postContent);
+        }
         var itemsCount = await Post.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -113,7 +135,7 @@ exports.list = async (req, res) => {
             buyorsellImageBase: buyorsellConfig.imageBase,
             eventsImageBase: eventsConfig.imageBase,
             pagination: pagination,
-            items: listPosts
+            items: postContentArray
         });
     } catch (err) {
         res.status(500).send({
