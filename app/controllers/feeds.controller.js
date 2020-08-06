@@ -24,7 +24,10 @@ exports.create = async (req, res) => {
             contentType: feedType,
             postContent: feedContent,
             fileName: filename,
-            feedCreatedBy: userId
+            feedCreatedBy: userId,
+            status: 1,
+            tsCreatedAt: Date.now(),
+            tsCreatedAt: null
         });
         var saveFeed = newFeed.save();
         res.status(200).send({

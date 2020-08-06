@@ -18,6 +18,7 @@ module.exports = (app) => {
     app.post('/accounts/verify-otp', accountsValidator.validator('verifyOtp'), accounts.verifyOtp);
     app.get('/accounts/profile', auth, accounts.profile);
     app.patch('/accounts/edit-profile', auth, userImageUpload.single('image'), accounts.editProfile);
+    app.get('/accounts/my-posts', auth, accounts.myPosts);
 };
 
 
