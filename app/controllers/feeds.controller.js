@@ -23,7 +23,8 @@ exports.create = async (req, res) => {
         const newFeed = new Post({
             contentType: feedType,
             postContent: feedContent,
-            fileName: filename
+            fileName: filename,
+            feedCreatedBy: userId
         });
         var saveFeed = newFeed.save();
         res.status(200).send({

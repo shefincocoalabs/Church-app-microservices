@@ -40,6 +40,7 @@ const PostSchema = mongoose.Schema({
     additionalInfo: String,
     postContent: String,
     fileName: String,
+    feedCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, 
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
