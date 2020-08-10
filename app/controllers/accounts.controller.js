@@ -489,13 +489,17 @@
         contentType: 'feedpost',
         postType: 'image'
       }, {
-        fileName: 1
+        fileName: 1,
+        tsCreatedAt: 1
       }).sort({
         'tsCreatedAt': -1
       });
       var postImages = [];
       for (var i = 0; i < postedData.length; i++) {
-        postImages.push(postedData[i].fileName)
+        postImages.push({
+          image: postedData[i].fileName,
+          createdAt: new Date(postedData[i].tsCreatedAt)
+        })
       }
       res.status(200).send({
         success: 1,
