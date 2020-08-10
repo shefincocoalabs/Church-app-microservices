@@ -228,13 +228,17 @@
         contentType: 'feedpost',
         postType: 'image'
       }, {
-        fileName: 1
+        fileName: 1,
+        tsCreatedAt: 1
       }).limit(3).sort({
         'tsCreatedAt': -1
       });
       var postImages = [];
       for (var i = 0; i < postedData.length; i++) {
-        postImages.push(postedData[i].fileName)
+        postImages.push({
+          image: postedData[i].fileName,
+          createdAt: new Date(postedData[i].tsCreatedAt)
+        })
       }
       var profileDataObj = {};
       profileDataObj.name = profileData.name;

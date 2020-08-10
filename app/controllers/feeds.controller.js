@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
             feedCreatedBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
-            tsCreatedAt: null
+            tsModifiedAt: null
         });
         var saveFeed = newFeed.save();
         res.status(200).send({

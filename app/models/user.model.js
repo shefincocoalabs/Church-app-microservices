@@ -4,7 +4,6 @@ function transform(ret) {
     ret.id = ret._id;
     delete ret._id;
     delete ret.status;
-    delete ret.tsCreatedAt;
     delete ret.tsModifiedAt;
 }
 var options = {
