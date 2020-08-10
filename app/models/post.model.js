@@ -39,6 +39,7 @@ const PostSchema = mongoose.Schema({
     kilometer: String,
     additionalInfo: String,
     postContent: String,
+    postType: String,
     fileName: String,
     feedCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, 
     status: Number,

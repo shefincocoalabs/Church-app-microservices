@@ -4,26 +4,34 @@ var feedType = constant.TYPE_FEEDPOST;
 var config = require('../../config/app.config.js');
 var eventsConfig = config.events;
 var buyorsellConfig = config.buyorsell;
-var feedConfig = config.feeds;
 var feedsConfig = config.feeds;
+var usersConfig = config.users;
 
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var file = req.file;
-    if (!file) {
-        return res.status(400).send({
-            success: 0,
-            message: 'file is required'
-        })
-    }
-    var filename = file.filename;
+    var files = req.files;
+    var type;
+    var fileName;
     var feedContent = req.body.feedContent;
+    if (files.image && !files.video && !files.text) {
+        type = "image";
+        fileName = files.image[0].filename
+    }
+    if (!req.files.images && req.files.video && !req.files.text) {
+        type = "video";
+        fileName = files.video[0].filename;
+    }
+    if (!req.files.images && req.files.video && !req.files.text) {
+        type = "text";
+        fileName = files.text[0].filename;
+    }
     try {
         const newFeed = new Post({
             contentType: feedType,
             postContent: feedContent,
-            fileName: filename,
+            postType: type,
+            fileName: fileName,
             feedCreatedBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -69,6 +77,7 @@ exports.list = async (req, res) => {
             images: 1,
             fileName: 1,
             postContent: 1,
+            postType: 1,
             fileName: 1
         };
         var filter = {
@@ -97,7 +106,13 @@ exports.list = async (req, res) => {
                 }
             ]
         }
-        listPosts = await Post.find(filter, projection, pageParams).limit(perPage).sort({
+        listPosts = await Post.find(filter, projection, pageParams).populate([{
+            path: 'userId',
+            select: 'name image'
+        }, {
+            path: 'feedCreatedBy',
+            select: 'name image'
+        }]).limit(perPage).sort({
             'tsCreatedAt': -1
         });
         var postContentArray = [];
@@ -109,6 +124,7 @@ exports.list = async (req, res) => {
                 postContent.caption = listPosts[i].caption;
                 postContent.rate = listPosts[i].rate;
                 postContent.images = listPosts[i].images;
+                postContent.user = listPosts[i].userId;
             } else if (listPosts[i].contentType == 'events') {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
@@ -118,7 +134,9 @@ exports.list = async (req, res) => {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.postContent = listPosts[i].postContent;
+                postContent.postType = listPosts[i].postType;
                 postContent.fileName = listPosts[i].fileName;
+                postContent.user = listPosts[i].feedCreatedBy;
             }
             postContentArray.push(postContent);
         }
@@ -135,6 +153,7 @@ exports.list = async (req, res) => {
         }
         res.status(200).send({
             success: 1,
+            userImageBase: usersConfig.imageBase,
             postFeedImageBase: feedsConfig.imageBase,
             buyorsellImageBase: buyorsellConfig.imageBase,
             eventsImageBase: eventsConfig.imageBase,

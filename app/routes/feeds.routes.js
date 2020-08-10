@@ -13,6 +13,6 @@ var storage = multer.diskStorage({
 var feedFileUpload = multer({ storage: storage });
 module.exports = (app) => {
     const feeds = require('../controllers/feeds.controller');
-    app.post('/feeds/create', auth ,feedFileUpload.single('image'), feedsValidator.validator('createFeed'), feeds.create);
+    app.post('/feeds/create', auth ,feedFileUpload.fields([{ name: 'text' }, { name: 'image'}, { name: 'video'}]), feedsValidator.validator('createFeed'), feeds.create);
     app.get('/feeds/list', auth , feeds.list);
 };
