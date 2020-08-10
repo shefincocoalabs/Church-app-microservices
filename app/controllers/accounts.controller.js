@@ -190,7 +190,7 @@
     }
   }
 
-  exports.profile = async (req, res) => {
+  exports.profileSummary = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     try {
@@ -217,11 +217,27 @@
       }, {
         path: 'parishWard',
         select: 'name'
-      }])
+      }, {
+        path: 'familyMembers',
+        select: 'name image'
+      }]);
+      var profileDataObj = {};
+      profileDataObj.name = profileData.name;
+      profileDataObj.email = profileData.email;
+      profileDataObj.phone = profileData.phone;
+      profileDataObj.image = profileData.image;
+      profileDataObj.address = profileData.address;
+      profileDataObj.bloodGroup = profileData.bloodGroup
+      profileDataObj.church = profileData.church;
+      profileDataObj.parish = profileData.parish;
+      profileDataObj.parishWard = profileData.parishWard;
+
+      var familyMembers = profileData.familyMembers.slice(0, 3);
       res.status(200).send({
         success: 1,
         imageBase: usersConfig.imageBase,
-        item: profileData
+        profileData: profileDataObj,
+        familyMembers: familyMembers
       })
     } catch (err) {
       res.status(500).send({
@@ -351,6 +367,98 @@
     }
   }
 
+  exports.addFamilyMembers = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var familyMembers = req.body.familyMembers;
+    if (!familyMembers) {
+      return res.status(400).send({
+        success: 0,
+        param: 'familyMembers',
+        message: 'Array of family members Ids is required'
+      })
+    }
+    try {
+      var filter = {
+        _id: userId,
+        status: 1
+      };
+      var promiseArray = [];
+      for (var i = 0; i < familyMembers.length; i++) {
+        promiseArray.push(i);
+        var updateFamilyMemebers = await Users.update(filter, {
+          $push: {
+            familyMembers: familyMembers
+          }
+        })
+      }
+      Promise.all(promiseArray).then(result => {
+        res.status(200).send({
+          success: 1,
+          message: 'Family members added successfully'
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
+  exports.listFamilyMembers = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || usersConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : usersConfig.resultsPerPage;
+    try {
+      var filter = {
+        _id: userId,
+        status: 1
+      };
+      var projection = {
+        familyMembers: 1
+      };
+      var listFamilyMembers = await Users.findOne(filter, projection).populate({
+        path: 'familyMembers',
+        select: 'name image'
+      })
+      if (!listFamilyMembers) {
+        return res.status(400).send({
+          success: 0,
+          message: 'User not found or deleted'
+        })
+      }
+      var familyMembers = listFamilyMembers.familyMembers;
+      var itemsCount = familyMembers.length;
+      items = paginate(familyMembers, perPage, page);
+      var totalPages = itemsCount / perPage;
+      totalPages = Math.ceil(totalPages);
+      var hasNextPage = page < totalPages;
+      var pagination = {
+        page: page,
+        perPage: perPage,
+        hasNextPage: hasNextPage,
+        totalItems: itemsCount,
+        totalPages: totalPages,
+      };
+      res.status(200).send({
+        success: 1,
+        imageBase: usersConfig.imageBase,
+        pagination: pagination,
+        items: familyMembers
+      })
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
   async function otp(phone) {
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();
@@ -376,3 +484,7 @@
 
     return otpResponse
   }
+
+  function paginate(array, page_size, page_number) {
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+  };

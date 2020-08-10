@@ -8,8 +8,9 @@ module.exports = {
   },
   users: {
     imageBase: commonStorePath + 'users/',
-    //  imageUploadPath: 'uploads'
-     imageUploadPath: '/var/www/html/church-app-images/users/'
+    //  imageUploadPath: 'uploads',
+    imageUploadPath: '/var/www/html/church-app-images/users/',
+    resultsPerPage: 30
   },
   pasters: {
     resultsPerPage: 30

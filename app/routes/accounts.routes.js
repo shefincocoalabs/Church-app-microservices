@@ -16,9 +16,11 @@ module.exports = (app) => {
     app.post('/accounts/sign-up', accountsValidator.validator('signUp'), accounts.signUp);
     app.post('/accounts/send-otp', accountsValidator.validator('sendOtp'), accounts.sendOtp);
     app.post('/accounts/verify-otp', accountsValidator.validator('verifyOtp'), accounts.verifyOtp);
-    app.get('/accounts/profile', auth, accounts.profile);
+    app.get('/accounts/profile', auth, accounts.profileSummary);
     app.patch('/accounts/edit-profile', auth, userImageUpload.single('image'), accounts.editProfile);
     app.get('/accounts/my-posts', auth, accounts.myPosts);
+    app.post('/accounts/family-members', auth, accounts.addFamilyMembers);
+    app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
 };
 
 
