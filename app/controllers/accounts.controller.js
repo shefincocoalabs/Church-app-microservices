@@ -240,7 +240,7 @@
       profileDataObj.name = profileData.name;
       profileDataObj.email = profileData.email;
       profileDataObj.phone = profileData.phone;
-      profileDataObj.image = profileData.image;
+      profileDataObj.image = profileData.image ? profileData.image : "";
       profileDataObj.address = profileData.address;
       profileDataObj.bloodGroup = profileData.bloodGroup
       profileDataObj.church = profileData.church;
