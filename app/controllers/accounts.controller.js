@@ -455,7 +455,7 @@
       }
       var familyMembers = listFamilyMembers.familyMembers;
       var itemsCount = familyMembers.length;
-      items = paginate(familyMembers, perPage, page);
+      familyMembers = paginate(familyMembers, perPage, page);
       var totalPages = itemsCount / perPage;
       totalPages = Math.ceil(totalPages);
       var hasNextPage = page < totalPages;
@@ -483,6 +483,11 @@
   exports.listAllPhotos = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || usersConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : usersConfig.resultsPerPage;
     try {
       var postedData = await Post.find({
         feedCreatedBy: userId,
@@ -501,9 +506,22 @@
           createdAt: new Date(postedData[i].tsCreatedAt)
         })
       }
+      var itemsCount = postImages.length;
+      postImages = paginate(postImages, perPage, page);
+      var totalPages = itemsCount / perPage;
+      totalPages = Math.ceil(totalPages);
+      var hasNextPage = page < totalPages;
+      var pagination = {
+        page: page,
+        perPage: perPage,
+        hasNextPage: hasNextPage,
+        totalItems: itemsCount,
+        totalPages: totalPages,
+      };
       res.status(200).send({
         success: 1,
         imageBase: feedsConfig.imageBase,
+        pagination: pagination,
         items: postImages
       })
     } catch (err) {
