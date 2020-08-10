@@ -190,6 +190,8 @@
     }
   }
 
+  // *** Profile summary ***
+
   exports.profileSummary = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -221,6 +223,19 @@
         path: 'familyMembers',
         select: 'name image'
       }]);
+      var postedData = await Post.find({
+        feedCreatedBy: userId,
+        contentType: 'feedpost',
+        postType: 'image'
+      }, {
+        fileName: 1
+      }).limit(3).sort({
+        'tsCreatedAt': -1
+      });
+      var postImages = [];
+      for (var i = 0; i < postedData.length; i++) {
+        postImages.push(postedData[i].fileName)
+      }
       var profileDataObj = {};
       profileDataObj.name = profileData.name;
       profileDataObj.email = profileData.email;
@@ -235,9 +250,11 @@
       var familyMembers = profileData.familyMembers.slice(0, 3);
       res.status(200).send({
         success: 1,
-        imageBase: usersConfig.imageBase,
+        userImageBase: usersConfig.imageBase,
+        feedImageBase: feedsConfig.imageBase,
         profileData: profileDataObj,
-        familyMembers: familyMembers
+        familyMembers: familyMembers,
+        images: postImages
       })
     } catch (err) {
       res.status(500).send({
@@ -450,6 +467,36 @@
         imageBase: usersConfig.imageBase,
         pagination: pagination,
         items: familyMembers
+      })
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
+  exports.listAllPhotos = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    try {
+      var postedData = await Post.find({
+        feedCreatedBy: userId,
+        contentType: 'feedpost',
+        postType: 'image'
+      }, {
+        fileName: 1
+      }).sort({
+        'tsCreatedAt': -1
+      });
+      var postImages = [];
+      for (var i = 0; i < postedData.length; i++) {
+        postImages.push(postedData[i].fileName)
+      }
+      res.status(200).send({
+        success: 1,
+        imageBase: feedsConfig.imageBase,
+        items: postImages
       })
     } catch (err) {
       res.status(500).send({

@@ -21,6 +21,7 @@ module.exports = (app) => {
     app.get('/accounts/my-posts', auth, accounts.myPosts);
     app.post('/accounts/family-members', auth, accounts.addFamilyMembers);
     app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
+    app.get('/accounts/photos', auth, accounts.listAllPhotos);
 };
 
 
