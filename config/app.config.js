@@ -48,6 +48,9 @@ module.exports = {
     imageBase: commonStorePath + 'matrimony/',
     // imageUploadPath: 'uploads',
     imageUploadPath: '/var/www/html/church-app-images/matrimony/'
+  },
+  urogulf: {
+    resultsPerPage: 30
   }
 
 

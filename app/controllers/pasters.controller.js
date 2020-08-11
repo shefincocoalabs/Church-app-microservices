@@ -18,10 +18,14 @@ exports.list = async (req, res) => {
         limit: perPage
     };
     try {
-        var pastersList = await Paster.find({}, {}, pageParams).limit(perPage).sort({
+        var pastersList = await Paster.find({
+            status: 1
+        }, {}, pageParams).limit(perPage).sort({
             'tsCreatedAt': -1
         });
-        var itemsCount = await Paster.countDocuments();
+        var itemsCount = await Paster.countDocuments({
+            status: 1
+        });
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -47,7 +51,7 @@ exports.list = async (req, res) => {
 }
 
 // *** Paster Detail ***
-exports.detail = async(req, res) => {
+exports.detail = async (req, res) => {
     var id = req.params.id;
     var isValidId = ObjectId.isValid(id);
     if (!isValidId) {
