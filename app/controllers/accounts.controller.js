@@ -106,13 +106,31 @@
         } else {
           var result = await Users.findOne({
             phone: phone
-          })
+          }).populate([{
+            path: 'church',
+            select: 'name'
+          }, {
+            path: 'parish',
+            select: 'name'
+          }, {
+            path: 'parishWard',
+            select: 'name'
+          }])
           userId = result._id;
           var payload = {
+            id: result._id
+          };
+          var userData = {
             id: result._id,
             name: result.name,
             email: result.email,
-            phone: result.phone
+            phone: result.phone,
+            image: result.image ? result.image : "",
+            address: result.address,
+            bloodGroup: result.bloodGroup,
+            church: result.church,
+            parish: result.parish,
+            parishWard: result.parishWard
           };
           var token = jwt.sign({
             data: payload,
@@ -143,7 +161,8 @@
           return res.status(200).send({
             success: 1,
             message: 'Otp verified successfully',
-            userDetails: payload,
+            imageBase: usersConfig.imageBase,
+            profileData: userData,
             token: token
           })
         }
