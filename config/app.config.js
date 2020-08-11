@@ -13,6 +13,7 @@ module.exports = {
     resultsPerPage: 30
   },
   pasters: {
+    imageBase: commonStorePath + 'pasters/',
     resultsPerPage: 30
   },
   groups: {

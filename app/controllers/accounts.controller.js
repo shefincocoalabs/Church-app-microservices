@@ -121,6 +121,7 @@
             id: result._id
           };
           var userData = {
+            imageBase: usersConfig.imageBase,
             id: result._id,
             name: result.name,
             email: result.email,
@@ -260,6 +261,7 @@
         })
       }
       var profileDataObj = {};
+      profileDataObj.imageBase = usersConfig.imageBase;
       profileDataObj.name = profileData.name;
       profileDataObj.email = profileData.email;
       profileDataObj.phone = profileData.phone;
@@ -286,6 +288,8 @@
       })
     }
   }
+
+// *** Edit profile ***
 
   exports.editProfile = async (req, res) => {
     var identity = req.identity.data;
@@ -355,6 +359,7 @@
     }
   }
 
+// *** My posts ***
   exports.myPosts = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -407,6 +412,7 @@
     }
   }
 
+// *** Add Family memebers ***
   exports.addFamilyMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -446,6 +452,7 @@
     }
   }
 
+// *** List family memebers ***
   exports.listFamilyMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -499,6 +506,7 @@
     }
   }
 
+// *** List all photos ***
   exports.listAllPhotos = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
