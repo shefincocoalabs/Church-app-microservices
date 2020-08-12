@@ -295,6 +295,7 @@
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
+    console.log(file);
     var params = req.body;
     var name = params.name;
     var email = params.email;
