@@ -305,7 +305,7 @@
     var parishWard = params.parishWard;
     var bloodGroup = params.bloodGroup;
     try {
-      if (Object.keys(req.body).length === 0) {
+      if ((Object.keys(req.body).length === 0) && (!file)) {
         return res.status(400).send({
           success: 0,
           message: 'Nothing to update'
