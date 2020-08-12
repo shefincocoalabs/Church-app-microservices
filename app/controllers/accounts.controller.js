@@ -191,7 +191,7 @@
         status: 1
       });
       if (!checkPhone) {
-        return res.status(400).send({
+        return res.status(200).send({
           success: 0,
           message: 'Phone number is not registered with us'
         })

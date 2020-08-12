@@ -14,17 +14,27 @@ exports.create = async (req, res) => {
     var type;
     var fileName;
     var feedContent = req.body.feedContent;
-    if (files.image && !files.video && !files.text) {
-        type = "image";
-        fileName = files.image[0].filename
+    var textContent = req.body.textContent
+    var textStyle = req.body.textStyle;
+    if (files) {
+        if (files.image && !files.video) {
+            type = "image";
+            fileName = files.image[0].filename
+        }
+        if (!req.files.images && req.files.video) {
+            type = "video";
+            fileName = files.video[0].filename;
+        }
     }
-    if (!req.files.images && req.files.video && !req.files.text) {
-        type = "video";
-        fileName = files.video[0].filename;
-    }
-    if (!req.files.images && req.files.video && !req.files.text) {
+    if (textContent) {
         type = "text";
-        fileName = files.text[0].filename;
+        if (!textStyle) {
+            return res.status(400).send({
+                success: 0,
+                param: 'textStyle',
+                message: 'Text style is required'
+            })
+        }
     }
     try {
         const newFeed = new Post({
@@ -32,6 +42,8 @@ exports.create = async (req, res) => {
             postContent: feedContent,
             postType: type,
             fileName: fileName,
+            textContent: textContent || null,
+            textStyle: textStyle || null,
             feedCreatedBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -78,7 +90,9 @@ exports.list = async (req, res) => {
             fileName: 1,
             postContent: 1,
             postType: 1,
-            fileName: 1
+            fileName: 1,
+            textContent: 1,
+            textStyle: 1
         };
         var filter = {
             $or: [{
@@ -136,6 +150,8 @@ exports.list = async (req, res) => {
                 postContent.postContent = listPosts[i].postContent;
                 postContent.postType = listPosts[i].postType;
                 postContent.fileName = listPosts[i].fileName;
+                postContent.textContent = listPosts[i].textContent,
+                postContent.textStyle = listPosts[i].textStyle;
                 postContent.user = listPosts[i].feedCreatedBy;
             }
             postContentArray.push(postContent);
