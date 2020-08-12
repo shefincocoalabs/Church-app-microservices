@@ -289,7 +289,7 @@
     }
   }
 
-// *** Edit profile ***
+  // *** Edit profile ***
 
   exports.editProfile = async (req, res) => {
     var identity = req.identity.data;
@@ -343,12 +343,37 @@
         _id: userId,
         status: 1
       };
-      var updateUser = await Users.update(filter, update, {
-        new: true,
-        useFindAndModify: false
-      });
+      var profileData = await Users.findOneAndUpdate(filter, update, {
+          new: true,
+          useFindAndModify: false
+        })
+        .populate([{
+          path: 'church',
+          select: 'name'
+        }, {
+          path: 'parish',
+          select: 'name'
+        }, {
+          path: 'parishWard',
+          select: 'name'
+        }, {
+          path: 'familyMembers',
+          select: 'name image'
+        }]);
+      var profileDataObj = {};
+      profileDataObj.imageBase = usersConfig.imageBase;
+      profileDataObj.name = profileData.name;
+      profileDataObj.email = profileData.email;
+      profileDataObj.phone = profileData.phone;
+      profileDataObj.image = profileData.image ? profileData.image : "";
+      profileDataObj.address = profileData.address;
+      profileDataObj.bloodGroup = profileData.bloodGroup
+      profileDataObj.church = profileData.church;
+      profileDataObj.parish = profileData.parish;
+      profileDataObj.parishWard = profileData.parishWard;
       res.status(200).send({
         success: 1,
+        profileData: profileDataObj,
         message: 'Profile updated successfully'
       })
     } catch (err) {
@@ -359,7 +384,7 @@
     }
   }
 
-// *** My posts ***
+  // *** My posts ***
   exports.myPosts = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -412,7 +437,7 @@
     }
   }
 
-// *** Add Family memebers ***
+  // *** Add Family memebers ***
   exports.addFamilyMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -452,7 +477,7 @@
     }
   }
 
-// *** List family memebers ***
+  // *** List family memebers ***
   exports.listFamilyMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -506,7 +531,7 @@
     }
   }
 
-// *** List all photos ***
+  // *** List all photos ***
   exports.listAllPhotos = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
