@@ -23,6 +23,7 @@ var options = {
 const UserSchema = mongoose.Schema({
     name: String,
     email: String,
+    image: String,
     phone: String,
     address: String,
     church: { type: mongoose.Schema.Types.ObjectId, ref: 'Church'},
