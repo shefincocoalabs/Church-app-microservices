@@ -32,6 +32,7 @@ const UserSchema = mongoose.Schema({
     bloodGroup: String,
     isVerified: Boolean,
     familyMembers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    userType: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
