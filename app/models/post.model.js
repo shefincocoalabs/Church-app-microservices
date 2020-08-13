@@ -43,6 +43,7 @@ const PostSchema = mongoose.Schema({
     fileName: String,
     textContent: String,
     textStyle: Object,
+    sermonsCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'Paster'},
     feedCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, 
     status: Number,
     tsCreatedAt: Number,

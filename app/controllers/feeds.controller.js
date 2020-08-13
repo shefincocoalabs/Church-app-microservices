@@ -144,7 +144,7 @@ exports.list = async (req, res) => {
                 postContent.contentType = listPosts[i].contentType;
                 postContent.name = listPosts[i].name;
                 postContent.image = listPosts[i].image;
-            } else {
+            } else if(listPosts[i].contentType == 'feedpost') {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.postContent = listPosts[i].postContent;

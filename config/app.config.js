@@ -51,6 +51,10 @@ module.exports = {
   },
   urogulf: {
     resultsPerPage: 30
+  },
+  sermons: {
+    resultsPerPage: 30,
+    imageBase: commonStorePath + 'sermons/'
   }
 
 

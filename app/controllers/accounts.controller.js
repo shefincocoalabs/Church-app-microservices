@@ -19,10 +19,6 @@
   //   **** Sign-up ****
 
   exports.signUp = async (req, res) => {
-    console.log('signUp');
-    console.log('req.body');
-    console.log(req.body);
-    console.log('req.body');
     var name = req.body.name;
     var email = req.body.email;
     var phone = req.body.phone;
