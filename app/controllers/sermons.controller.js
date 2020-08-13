@@ -1,6 +1,8 @@
 var Sermons = require('../models/post.model');
 var Paster = require('../models/paster.model');
 var config = require('../../config/app.config.js');
+var constant = require('../helpers/constants');
+var sermonsType = constant.TYPE_SERMONS;
 var sermonsConfig = config.sermons;
 var pastersConfig = config.pasters;
 
@@ -31,7 +33,7 @@ exports.list = async (req, res) => {
                     $options: 'i'
                 }
             }],
-            contentType: 'sermons',
+            contentType: sermonsType,
             status: 1
         };
         var projection = {

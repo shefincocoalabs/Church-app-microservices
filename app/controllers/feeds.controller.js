@@ -1,6 +1,8 @@
 var Post = require('../models/post.model');
 var constant = require('../helpers/constants');
 var feedType = constant.TYPE_FEEDPOST;
+var buySellType = constant.TYPE_BUYORSELL;
+var eventsType = constant.TYPE_EVENT
 var config = require('../../config/app.config.js');
 var eventsConfig = config.events;
 var buyorsellConfig = config.buyorsell;
@@ -132,19 +134,19 @@ exports.list = async (req, res) => {
         var postContentArray = [];
         for (var i = 0; i < listPosts.length; i++) {
             var postContent = {};
-            if (listPosts[i].contentType == 'buy/sell') {
+            if (listPosts[i].contentType == buySellType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.caption = listPosts[i].caption;
                 postContent.rate = listPosts[i].rate;
                 postContent.images = listPosts[i].images;
                 postContent.user = listPosts[i].userId;
-            } else if (listPosts[i].contentType == 'events') {
+            } else if (listPosts[i].contentType == eventsType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.name = listPosts[i].name;
                 postContent.image = listPosts[i].image;
-            } else if(listPosts[i].contentType == 'feedpost') {
+            } else if(listPosts[i].contentType == feedType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.postContent = listPosts[i].postContent;
