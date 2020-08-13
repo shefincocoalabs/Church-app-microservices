@@ -22,6 +22,7 @@ exports.list = async (req, res) => {
         };
         var projection = {
             caption: 1,
+            trustName: 1,
             title: 1,
             images: 1,
             fund: 1
@@ -76,6 +77,7 @@ exports.detail = async (req, res) => {
         };
         var projection = {
             caption: 1,
+            trustName: 1,
             title: 1,
             images: 1,
             fund: 1,

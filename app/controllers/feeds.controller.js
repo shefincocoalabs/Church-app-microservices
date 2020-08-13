@@ -156,6 +156,9 @@ exports.list = async (req, res) => {
                 postContent.textStyle = listPosts[i].textStyle;
                 postContent.user = listPosts[i].feedCreatedBy;
             }
+            else {
+                continue;
+            }
             postContentArray.push(postContent);
         }
         var itemsCount = await Post.countDocuments(filter);
