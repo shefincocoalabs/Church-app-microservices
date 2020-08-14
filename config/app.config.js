@@ -41,6 +41,7 @@ module.exports = {
   charity: {
     resultsPerPage: 30,
     imageBase: commonStorePath + 'charity/',
+    // imageUploadPath: 'uploads'
     imageUploadPath: '/var/www/html/church-app-images/charity/'
   },
   matrimony: {

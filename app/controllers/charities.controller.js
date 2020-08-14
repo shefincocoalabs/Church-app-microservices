@@ -1,4 +1,5 @@
 var Charity = require('../models/charity.model');
+var CharityPayment = require('../models/charityPayments.model');
 var config = require('../../config/app.config.js');
 var ObjectId = require('mongoose').Types.ObjectId;
 var charityConfig = config.charity;
@@ -90,6 +91,40 @@ exports.detail = async (req, res) => {
             imageBase: charityConfig.imageBase,
             item: charityDetail
         });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+// *** Charity payments ***
+exports.payments = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.body;
+    var charityId = params.charityId;
+    var transactionId = params.transactionId;
+    var amount = params.amount;
+    var paidStatus = params.paidStatus;
+    var paidOn = params.paidOn;
+    try {
+        const newPayment = new CharityPayment({
+            charityId: charityId,
+            transactionId: transactionId,
+            amount: amount,
+            paidStatus: paidStatus,
+            paidOn: paidOn,
+            status: 1,
+            tsCreatedAt: Date.now(),
+            tsModifiedAt: null
+        });
+        var savePayment = await newPayment.save();
+        res.status(200).send({
+            success: 1,
+            message: 'Payment successfully added'
+        })
     } catch (err) {
         res.status(500).send({
             success: 0,
