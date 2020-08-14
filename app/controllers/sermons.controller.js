@@ -4,6 +4,7 @@ var config = require('../../config/app.config.js');
 var constant = require('../helpers/constants');
 var sermonsType = constant.TYPE_SERMONS;
 var sermonsConfig = config.sermons;
+var feedsConfig = config.feeds;
 var pastersConfig = config.pasters;
 
 // *** Sermons List ***
@@ -64,7 +65,7 @@ exports.list = async (req, res) => {
         }
         res.status(200).send({
             success: 1,
-            sermonsFileBase: sermonsConfig.imageBase,
+            sermonsFileBase: feedsConfig.imageBase,
             pasterImageBase: pastersConfig.imageBase,
             pagination: pagination,
             items: sermonsList
