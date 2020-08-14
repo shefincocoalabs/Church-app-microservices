@@ -98,7 +98,8 @@ exports.list = async (req, res) => {
             fileName: 1,
             textContent: 1,
             textStyle: 1,
-            likesCount: 1
+            likesCount: 1,
+            tsCreatedAt: 1
         };
         var filter = {
             $or: [{
@@ -145,11 +146,13 @@ exports.list = async (req, res) => {
                 postContent.rate = listPosts[i].rate;
                 postContent.images = listPosts[i].images;
                 postContent.user = listPosts[i].userId;
+                postContent.createdAt = new Date(listPosts[i].tsCreatedAt);
             } else if (listPosts[i].contentType == eventsType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.name = listPosts[i].name;
                 postContent.image = listPosts[i].image;
+                postContent.createdAt = new Date(listPosts[i].tsCreatedAt);
             } else if (listPosts[i].contentType == feedType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
@@ -160,6 +163,7 @@ exports.list = async (req, res) => {
                 postContent.textStyle = listPosts[i].textStyle;
                 postContent.user = listPosts[i].feedCreatedBy;
                 postContent.likesCount = listPosts[i].likesCount;
+                postContent.createdAt = new Date(listPosts[i].tsCreatedAt);
             } else {
                 continue;
             }
