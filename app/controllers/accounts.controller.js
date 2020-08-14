@@ -51,6 +51,7 @@
         parish: parish,
         parishWard: parishWard,
         bloodGroup: bloodGroup,
+        isBlocked: false,
         isVerified: false,
         status: 1,
         tsCreatedAt: new Date(),

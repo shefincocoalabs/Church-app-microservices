@@ -48,6 +48,7 @@ const UserSchema = mongoose.Schema({
         relation: String
     }],
     userType: String,
+    isBlocked: Boolean,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

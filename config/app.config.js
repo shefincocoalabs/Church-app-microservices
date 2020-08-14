@@ -56,6 +56,9 @@ module.exports = {
   sermons: {
     resultsPerPage: 30,
     imageBase: commonStorePath + 'sermons/'
+  },
+  bloodDonation: {
+    resultsPerPage: 30
   }
 
 
