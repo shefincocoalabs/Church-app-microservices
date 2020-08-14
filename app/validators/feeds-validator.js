@@ -17,5 +17,21 @@ exports.validator = (method) => {
                 }
             ]
         }
+        case 'like': {
+            return [
+                check('postId', 'PostId is required').notEmpty(),
+                check('likeStatus', 'Likestatus is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
     }
 }

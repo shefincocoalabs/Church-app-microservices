@@ -23,14 +23,17 @@ var options = {
 
 const PostSchema = mongoose.Schema({
     contentType: String,
-    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     name: String,
     detail: String,
     image: String,
     timing: Array,
     venue: String,
     entryFees: Array,
-    participants: Array, 
+    participants: Array,
     categoryAndType: String,
     caption: String,
     images: Array,
@@ -43,8 +46,22 @@ const PostSchema = mongoose.Schema({
     fileName: String,
     textContent: String,
     textStyle: Object,
-    sermonsCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'Paster'},
-    feedCreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, 
+    likesCount: Number,
+    likes: [{
+        likeStatus: Boolean,
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    }],
+    sermonsCreatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Paster'
+    },
+    feedCreatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

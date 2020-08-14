@@ -9,6 +9,7 @@ var buyorsellConfig = config.buyorsell;
 var feedsConfig = config.feeds;
 var usersConfig = config.users;
 
+// *** Create Feed ***
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -47,6 +48,7 @@ exports.create = async (req, res) => {
             textContent: textContent || null,
             textStyle: textStyle || null,
             feedCreatedBy: userId,
+            likesCount: 0,
             status: 1,
             tsCreatedAt: Date.now(),
             tsModifiedAt: null
@@ -65,6 +67,7 @@ exports.create = async (req, res) => {
     }
 }
 
+// *** List feeds ***
 exports.list = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -94,7 +97,8 @@ exports.list = async (req, res) => {
             postType: 1,
             fileName: 1,
             textContent: 1,
-            textStyle: 1
+            textStyle: 1,
+            likesCount: 1
         };
         var filter = {
             $or: [{
@@ -146,7 +150,7 @@ exports.list = async (req, res) => {
                 postContent.contentType = listPosts[i].contentType;
                 postContent.name = listPosts[i].name;
                 postContent.image = listPosts[i].image;
-            } else if(listPosts[i].contentType == feedType) {
+            } else if (listPosts[i].contentType == feedType) {
                 postContent.id = listPosts[i].id;
                 postContent.contentType = listPosts[i].contentType;
                 postContent.postContent = listPosts[i].postContent;
@@ -155,8 +159,8 @@ exports.list = async (req, res) => {
                 postContent.textContent = listPosts[i].textContent,
                 postContent.textStyle = listPosts[i].textStyle;
                 postContent.user = listPosts[i].feedCreatedBy;
-            }
-            else {
+                postContent.likesCount = listPosts[i].likesCount;
+            } else {
                 continue;
             }
             postContentArray.push(postContent);
@@ -181,6 +185,64 @@ exports.list = async (req, res) => {
             pagination: pagination,
             items: postContentArray
         });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+// *** Like or Dislike ***
+exports.likeOrDislike = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var postId = req.body.postId;
+    var likeStatus = req.body.likeStatus;
+    var update;
+    try {
+        var filter = {
+            _id: postId,
+            status: 1
+        };
+        var check = await Post.findOne(filter);
+        var likesArray = check.likes;
+        var findIndex = await likesArray.findIndex(element => element.userId == userId);
+        if (findIndex >= 0) {
+            var likeObj = likesArray[findIndex];
+            likesArray[findIndex].likeStatus = likeStatus;
+            var updateLikesArray = {
+                likes: likesArray
+            }
+            update = await Post.findOneAndUpdate(filter, updateLikesArray, {
+                new: true,
+                useFindAndModify: false
+            })
+        } else {
+            update = await Post.findOneAndUpdate(filter, {
+                $push: {
+                    likes: {
+                        userId: userId,
+                        likeStatus: likeStatus
+                    }
+                }
+            }, {
+                new: true,
+                useFindAndModify: false
+            })
+        }
+        var countLikes = await update.likes.filter(element => element.likeStatus == true);
+        countLikes = countLikes.length;
+        var updatesLikesCount = await Post.update(filter, {
+            likesCount: countLikes
+        }, {
+            new: true,
+            useFindAndModify: false
+        })
+        res.status(200).send({
+            success: 1,
+            message: 'updated'
+        })
     } catch (err) {
         res.status(500).send({
             success: 0,

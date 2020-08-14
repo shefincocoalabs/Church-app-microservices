@@ -56,5 +56,21 @@ exports.validator = (method) => {
                 }
             ]
         }
+        case 'addFamilyMember': {
+            return [
+                check('familyMember', 'MemberId is required').notEmpty(), 
+                check('relation', 'Relation is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
     }
 }

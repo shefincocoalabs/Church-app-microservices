@@ -15,4 +15,5 @@ module.exports = (app) => {
     const feeds = require('../controllers/feeds.controller');
     app.post('/feeds/create', auth ,feedFileUpload.fields([{ name: 'text' }, { name: 'image'}, { name: 'video'}]), feedsValidator.validator('createFeed'), feeds.create);
     app.get('/feeds/list', auth , feeds.list);
+    app.patch('/feeds/like', auth, feedsValidator.validator('like'), feeds.likeOrDislike);
 };

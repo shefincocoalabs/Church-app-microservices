@@ -26,12 +26,27 @@ const UserSchema = mongoose.Schema({
     image: String,
     phone: String,
     address: String,
-    church: { type: mongoose.Schema.Types.ObjectId, ref: 'Church'},
-    parish: { type: mongoose.Schema.Types.ObjectId, ref: 'Parish'},
-    parishWard: { type: mongoose.Schema.Types.ObjectId, ref: 'ParishWard'},
+    church: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Church'
+    },
+    parish: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Parish'
+    },
+    parishWard: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ParishWard'
+    },
     bloodGroup: String,
     isVerified: Boolean,
-    familyMembers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    familyMembers: [{
+        familyMember: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        relation: String
+    }],
     userType: String,
     status: Number,
     tsCreatedAt: Number,

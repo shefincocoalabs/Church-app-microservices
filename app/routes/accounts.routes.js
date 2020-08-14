@@ -19,7 +19,7 @@ module.exports = (app) => {
     app.get('/accounts/profile', auth, accounts.profileSummary);
     app.patch('/accounts/edit-profile', auth, userImageUpload.single('image'), accounts.editProfile);
     app.get('/accounts/my-posts', auth, accounts.myPosts);
-    app.post('/accounts/family-members', auth, accounts.addFamilyMembers);
+    app.post('/accounts/family-members', auth,accountsValidator.validator('addFamilyMember'), accounts.addFamilyMembers);
     app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
     app.get('/accounts/photos', auth, accounts.listAllPhotos);
 };

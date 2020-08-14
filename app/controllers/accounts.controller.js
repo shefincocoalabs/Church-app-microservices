@@ -442,33 +442,24 @@
   exports.addFamilyMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var familyMembers = req.body.familyMembers;
-    if (!familyMembers) {
-      return res.status(400).send({
-        success: 0,
-        param: 'familyMembers',
-        message: 'Array of family members Ids is required'
-      })
-    }
+    var familyMember = req.body.familyMember;
+    var relation = req.body.relation;
     try {
       var filter = {
         _id: userId,
         status: 1
       };
-      var promiseArray = [];
-      for (var i = 0; i < familyMembers.length; i++) {
-        promiseArray.push(i);
-        var updateFamilyMemebers = await Users.update(filter, {
-          $push: {
-            familyMembers: familyMembers
+      var updateFamilyMemebers = await Users.update(filter, {
+        $push: {
+          familyMembers: {
+            familyMember: familyMember,
+            relation: relation
           }
-        })
-      }
-      Promise.all(promiseArray).then(result => {
-        res.status(200).send({
-          success: 1,
-          message: 'Family members added successfully'
-        })
+        }
+      })
+      res.status(200).send({
+        success: 1,
+        message: 'Family members added successfully'
       })
     } catch (err) {
       res.status(500).send({

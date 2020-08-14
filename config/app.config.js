@@ -24,7 +24,7 @@ module.exports = {
   feeds: {
     resultsPerPage: 30,
     imageBase: commonStorePath + 'feeds/',
-    // imageUploadPath: 'uploads'
+    // imageUploadPath: 'uploads',
     imageUploadPath: '/var/www/html/church-app-images/feeds/'
   },
   events: {
