@@ -487,7 +487,7 @@
         familyMembers: 1
       };
       var listFamilyMembers = await Users.findOne(filter, projection).populate({
-        path: 'familyMembers',
+        path: 'familyMembers.familyMember',
         select: 'name image'
       })
       if (!listFamilyMembers) {
