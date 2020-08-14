@@ -26,7 +26,7 @@ exports.list = async (req, res) => {
         var projection = {
             neededDate: 1,
             bloodGroup: 1,
-            place: 1,
+            hospitalName: 1,
             tsCreatedAt: 1
         };
         var bloodDonationList = await BloodDonation.find(filter, projection, pageParams).limit(perPage).sort({
