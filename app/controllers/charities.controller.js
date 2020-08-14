@@ -83,7 +83,8 @@ exports.detail = async (req, res) => {
             images: 1,
             fund: 1,
             about: 1,
-            phone: 1
+            phone: 1,
+            address: 1
         };
         var charityDetail = await Charity.findOne(filter, projection);
         res.status(200).send({
