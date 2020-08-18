@@ -504,8 +504,17 @@
         })
       }
       var familyMembers = listFamilyMembers.familyMembers;
+      var famliyMembersArray = [];
+      for (var i = 0; i < familyMembers.length; i++) {
+         var familyMembersObj = {};
+         familyMembersObj.id = familyMembers[i].familyMember.id;
+         familyMembersObj.name = familyMembers[i].familyMember.name;
+         familyMembersObj.image = familyMembers[i].familyMember.image;
+         familyMembersObj.relation = familyMembers[i].relation
+         famliyMembersArray.push(familyMembersObj);
+      }
       var itemsCount = familyMembers.length;
-      familyMembers = paginate(familyMembers, perPage, page);
+      familyMembers = paginate(famliyMembersArray, perPage, page);
       var totalPages = itemsCount / perPage;
       totalPages = Math.ceil(totalPages);
       var hasNextPage = page < totalPages;
