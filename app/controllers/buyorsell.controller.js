@@ -8,7 +8,9 @@ var buyorsellConfig = config.buyorsell;
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
+    console.log('files');
     var files = req.files;
+    console.log('files');
     var params = req.body;
     var caption = params.caption;
     var rate = params.rate;

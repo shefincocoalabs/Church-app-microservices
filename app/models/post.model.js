@@ -62,6 +62,7 @@ const PostSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    feedStatus: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

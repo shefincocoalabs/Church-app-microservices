@@ -361,7 +361,6 @@
           path: 'familyMembers',
           select: 'name image'
         }]);
-      console.log(profileData);
       var profileDataObj = {};
       profileDataObj.imageBase = usersConfig.imageBase;
       profileDataObj.name = profileData.name;
