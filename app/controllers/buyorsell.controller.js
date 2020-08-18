@@ -8,9 +8,7 @@ var buyorsellConfig = config.buyorsell;
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    console.log('files');
     var files = req.files;
-    console.log('files');
     var params = req.body;
     var caption = params.caption;
     var rate = params.rate;
@@ -18,16 +16,16 @@ exports.create = async (req, res) => {
     var kilometer = params.kilometer;
     var additionalInfo = params.additionalInfo;
     var images = [];
-    if (files.length == 0) {
+    if (!files.images) {
         return res.status(400).send({
             success: 0,
             message: 'Atleast one image is required'
         })
     } else {
-        var len = files.length;
+        var len = files.images.length;
         var i = 0;
         while (i < len) {
-            images.push(files[i].filename);
+            images.push(files.images[i].filename);
             i++;
         }
     }
