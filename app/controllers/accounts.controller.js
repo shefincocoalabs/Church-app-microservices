@@ -229,7 +229,8 @@
         address: 1,
         parish: 1,
         parishWard: 1,
-        bloodGroup: 1
+        bloodGroup: 1,
+        'familyMembers.relation': 1
       };
       var profileData = await Users.findOne(filter, projection).populate([{
         path: 'church',
@@ -241,7 +242,7 @@
         path: 'parishWard',
         select: 'name'
       }, {
-        path: 'familyMembers',
+        path: 'familyMembers.familyMember',
         select: 'name image'
       }]);
       var postedData = await Post.find({
@@ -357,9 +358,6 @@
         }, {
           path: 'parishWard',
           select: 'name'
-        }, {
-          path: 'familyMembers',
-          select: 'name image'
         }]);
       var profileDataObj = {};
       profileDataObj.imageBase = usersConfig.imageBase;
