@@ -14,7 +14,7 @@ var storage = multer.diskStorage({
 var imageUpload = multer({ storage: storage });
 module.exports = (app) => {
     const buyorsell = require('../controllers/buyorsell.controller');
-    app.post('/buyorsell/create', auth, imageUpload.array('images'), buyorsellValidator.validator('create'), buyorsell.create);
+    app.post('/buyorsell/create', auth, imageUpload.fields([{ name: 'images' }]), buyorsellValidator.validator('create'), buyorsell.create);
     app.get('/buyorsell/list', auth, buyorsell.list);
     app.get('/buyorsell/:id/detail', auth, buyorsell.detail);
 };
