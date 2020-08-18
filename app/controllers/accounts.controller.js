@@ -275,12 +275,21 @@
       profileDataObj.parishWard = profileData.parishWard;
 
       var familyMembers = profileData.familyMembers.slice(0, 3);
+      var famliyMembersArray = [];
+      for (var i = 0; i < familyMembers.length; i++) {
+         var familyMembersObj = {};
+         familyMembersObj.id = familyMembers[i].familyMember.id;
+         familyMembersObj.name = familyMembers[i].familyMember.name;
+         familyMembersObj.image = familyMembers[i].familyMember.image;
+         familyMembersObj.relation = familyMembers[i].relation
+         famliyMembersArray.push(familyMembersObj);
+      }
       res.status(200).send({
         success: 1,
         userImageBase: usersConfig.imageBase,
         feedImageBase: feedsConfig.imageBase,
         profileData: profileDataObj,
-        familyMembers: familyMembers,
+        familyMembers: famliyMembersArray,
         images: postImages
       })
     } catch (err) {

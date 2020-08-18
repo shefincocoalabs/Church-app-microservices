@@ -4,6 +4,7 @@ var constant = require('../helpers/constants');
 var buyorsellType = constant.TYPE_BUYORSELL;
 var config = require('../../config/app.config.js');
 var buyorsellConfig = config.buyorsell;
+var usersConfig = config.users;
 
 exports.create = async (req, res) => {
     var identity = req.identity.data;
@@ -101,7 +102,10 @@ exports.list = async (req, res) => {
             model: 1,
             rate: 1
         };
-        var listBuyorSell = await Post.find(filter, projection, pageParams).limit(perPage).sort({
+        var listBuyorSell = await Post.find(filter, projection, pageParams).populate({
+            path: 'userId',
+            select: 'name image'
+        }).limit(perPage).sort({
             'tsCreatedAt': -1
         });
         var itemsCount = await Post.countDocuments(filter);
@@ -118,6 +122,7 @@ exports.list = async (req, res) => {
         res.status(200).send({
             success: 1,
             pagination: pagination,
+            userImageBase: usersConfig.imageBase,
             imageBase: buyorsellConfig.imageBase,
             items: listBuyorSell
         });
