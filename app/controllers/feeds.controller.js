@@ -1,4 +1,5 @@
 var Post = require('../models/post.model');
+var User = require('../models/user.model');
 var constant = require('../helpers/constants');
 var feedType = constant.TYPE_FEEDPOST;
 var buySellType = constant.TYPE_BUYORSELL;
@@ -40,6 +41,17 @@ exports.create = async (req, res) => {
         }
     }
     try {
+        var findUser = await User.findOne({
+            _id: userId,
+            status: 1
+        });
+        if (!findUser) {
+            return res.status(401).send({
+                success: 0,
+                message: 'User not found'
+            })
+        }
+        var churchId = findUser.churchId;
         const newFeed = new Post({
             contentType: feedType,
             postContent: feedContent,
@@ -48,6 +60,8 @@ exports.create = async (req, res) => {
             textContent: textContent || null,
             textStyle: textStyle || null,
             feedCreatedBy: userId,
+            churchId: churchId,
+            feedStatus: constant.PENDING_FEED,
             likesCount: 0,
             status: 1,
             tsCreatedAt: Date.now(),
