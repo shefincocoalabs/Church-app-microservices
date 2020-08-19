@@ -59,6 +59,9 @@ module.exports = {
   },
   bloodDonation: {
     resultsPerPage: 30
+  },
+  livePrayers: {
+    resultsPerPage: 30
   }
 
 

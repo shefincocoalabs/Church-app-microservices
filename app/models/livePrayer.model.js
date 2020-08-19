@@ -23,7 +23,7 @@ var options = {
 
 const LivePrayerSchema = mongoose.Schema({
     title: String,
-    date: Date,
+    date: String,
     time: String,
     description: String,
     liveVideoLink: String,

@@ -274,7 +274,7 @@
       profileDataObj.parish = profileData.parish;
       profileDataObj.parishWard = profileData.parishWard;
 
-      var familyMembers = profileData.familyMembers.slice(0, 3);
+      var familyMembers = profileData.familyMembers.slice(0, 10);
       var famliyMembersArray = [];
       for (var i = 0; i < familyMembers.length; i++) {
          var familyMembersObj = {};
