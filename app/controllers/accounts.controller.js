@@ -4,6 +4,7 @@
   const Parish = require('../models/parish.model');
   const ParishWard = require('../models/parishWard.model');
   const Post = require('../models/post.model');
+  const Matrimnoy = require('../models/matrimony.model');
   const config = require('../../config/app.config.js');
   var otpConfig = config.otp;
   var usersConfig = config.users;
@@ -117,7 +118,17 @@
             path: 'parishWard',
             select: 'name'
           }])
-          userId = result._id;
+          var userId = result._id;
+          var matrimonyId;
+          var findMatrimony = await Matrimnoy.findOne({
+            createdBy: userId,
+            status: 1
+          });
+          if (findMatrimony) {
+            matrimonyId = findMatrimony._id;
+          } else {
+            matrimonyId = null;
+          }
           var payload = {
             id: result._id
           };
@@ -132,7 +143,8 @@
             bloodGroup: result.bloodGroup,
             church: result.church,
             parish: result.parish,
-            parishWard: result.parishWard
+            parishWard: result.parishWard,
+            matrimonyId: matrimonyId
           };
           var token = jwt.sign({
             data: payload,
@@ -277,12 +289,12 @@
       var familyMembers = profileData.familyMembers.slice(0, 10);
       var famliyMembersArray = [];
       for (var i = 0; i < familyMembers.length; i++) {
-         var familyMembersObj = {};
-         familyMembersObj.id = familyMembers[i].familyMember.id;
-         familyMembersObj.name = familyMembers[i].familyMember.name;
-         familyMembersObj.image = familyMembers[i].familyMember.image;
-         familyMembersObj.relation = familyMembers[i].relation
-         famliyMembersArray.push(familyMembersObj);
+        var familyMembersObj = {};
+        familyMembersObj.id = familyMembers[i].familyMember.id;
+        familyMembersObj.name = familyMembers[i].familyMember.name;
+        familyMembersObj.image = familyMembers[i].familyMember.image;
+        familyMembersObj.relation = familyMembers[i].relation
+        famliyMembersArray.push(familyMembersObj);
       }
       res.status(200).send({
         success: 1,
@@ -506,12 +518,12 @@
       var familyMembers = listFamilyMembers.familyMembers;
       var famliyMembersArray = [];
       for (var i = 0; i < familyMembers.length; i++) {
-         var familyMembersObj = {};
-         familyMembersObj.id = familyMembers[i].familyMember.id;
-         familyMembersObj.name = familyMembers[i].familyMember.name;
-         familyMembersObj.image = familyMembers[i].familyMember.image;
-         familyMembersObj.relation = familyMembers[i].relation
-         famliyMembersArray.push(familyMembersObj);
+        var familyMembersObj = {};
+        familyMembersObj.id = familyMembers[i].familyMember.id;
+        familyMembersObj.name = familyMembers[i].familyMember.name;
+        familyMembersObj.image = familyMembers[i].familyMember.image;
+        familyMembersObj.relation = familyMembers[i].relation
+        famliyMembersArray.push(familyMembersObj);
       }
       var itemsCount = familyMembers.length;
       familyMembers = paginate(famliyMembersArray, perPage, page);
