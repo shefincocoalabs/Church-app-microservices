@@ -22,6 +22,7 @@ module.exports = (app) => {
     app.post('/accounts/family-members', auth,accountsValidator.validator('addFamilyMember'), accounts.addFamilyMembers);
     app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
     app.get('/accounts/photos', auth, accounts.listAllPhotos);
+    app.post('/accounts/donation', auth, accountsValidator.validator('donation'), accounts.donation);
 };
 
 

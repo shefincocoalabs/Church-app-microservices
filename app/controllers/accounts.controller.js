@@ -5,6 +5,7 @@
   const ParishWard = require('../models/parishWard.model');
   const Post = require('../models/post.model');
   const Matrimnoy = require('../models/matrimony.model');
+  const Donation = require('../models/donation.model');
   const config = require('../../config/app.config.js');
   var otpConfig = config.otp;
   var usersConfig = config.users;
@@ -601,6 +602,40 @@
         success: 0,
         message: err.message
       })
+    }
+  }
+
+// *** Donation ***
+
+  exports.donation = async(req,res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.body;
+    var transactionId = params.transactionId;
+    var amount = params.amount;
+    var paidStatus = params.paidStatus;
+    var paidOn = params.paidOn;
+    try {
+        const newPayment = new Donation({
+            userId: userId,
+            transactionId: transactionId,
+            amount: amount,
+            paidStatus: paidStatus,
+            paidOn: paidOn,
+            status: 1,
+            tsCreatedAt: Date.now(),
+            tsModifiedAt: null
+        });
+        var savePayment = await newPayment.save();
+        res.status(200).send({
+            success: 1,
+            message: 'Donation successfull'
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
     }
   }
 
