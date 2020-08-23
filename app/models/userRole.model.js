@@ -20,22 +20,11 @@ var options = {
         }
     }
 };
-
-const LivePrayerSchema = mongoose.Schema({
-    title: String,
-    date: String,
-    time: String,
-    churchId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Church'
-    },
-    description: String,
-    liveVideoLink: String,
-    videoLink: String,
-    thumbnailImage: String,
+const UserRoleSchema = mongoose.Schema({
+    name: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
 
 }, options);
-module.exports = mongoose.model('LivePrayer', LivePrayerSchema, 'LivePrayers');
+module.exports = mongoose.model('UserRole', UserRoleSchema, 'UserRoles');

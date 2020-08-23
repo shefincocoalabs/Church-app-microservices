@@ -48,6 +48,10 @@ const UserSchema = mongoose.Schema({
         relation: String
     }],
     userType: String,
+    roles: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserRole'
+    }],
     isBlocked: Boolean,
     status: Number,
     tsCreatedAt: Number,
