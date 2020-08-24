@@ -27,10 +27,8 @@ exports.list = async (req, res) => {
         var projection = {
             name: 1,
             image: 1,
-            timings: 1,
+            timing: 1,
             venue: 1,
-            visitors: 1,
-            exhibitors: 1,
             categoryId: 1
         };
         var listEvents = await Post.find(filter, projection, pageParams).populate('categoryId').limit(perPage).sort({
@@ -89,11 +87,12 @@ exports.detail = async (req, res) => {
             image: 1,
             timing: 1,
             venue: 1,
+            visitors: 1,
+            exhibitors: 1,
             entryFees: 1,
-            participants: 1,
-            categoryAndType: 1,
+            categoryId: 1,
         };
-        var eventDetail = await Post.findOne(filter, projection);
+        var eventDetail = await Post.findOne(filter, projection).populate('categoryId');
         res.status(200).send({
             success: 1,
             imageBase: eventConfig.imageBase,

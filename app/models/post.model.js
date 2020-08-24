@@ -34,6 +34,7 @@ const PostSchema = mongoose.Schema({
     name: String,
     detail: String,
     image: String,
+    timing: Array,
     timings: [{
         date: Date,
         startTime:String,
