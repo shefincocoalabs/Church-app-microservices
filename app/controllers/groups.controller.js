@@ -4,6 +4,7 @@ var config = require('../../config/app.config.js');
 var groupConfig = config.groups;
 var usersConfig = config.users;
 
+// *** Create Group ***
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -16,10 +17,10 @@ exports.create = async (req, res) => {
     }
     var fileName = file.filename;
     var name = req.body.name;
-    var memebers = req.body.memebers;
+    var members = req.body.members;
 
     try {
-        if (!Array.isArray(memebers)) {
+        if (!Array.isArray(members)) {
             return res.status(400).send({
                 success: 0,
                 message: 'members param should be an array of memberIds'
@@ -28,7 +29,7 @@ exports.create = async (req, res) => {
         const newGroup = new Group({
             name: name,
             image: fileName,
-            memebers: memebers,
+            members: members,
             createdBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -49,6 +50,7 @@ exports.create = async (req, res) => {
     }
 }
 
+// *** List group ***
 exports.list = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -79,6 +81,7 @@ exports.list = async (req, res) => {
     }
 }
 
+// *** Members list ***
 exports.membersList = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -120,6 +123,108 @@ exports.membersList = async (req, res) => {
             imageBase: usersConfig.imageBase,
             pagination: pagination,
             items: listMembers
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+// *** Group detail ***
+exports.groupDetail = async (req, res) => {
+    var groupId = req.params.id;
+    try {
+        var filter = {
+            _id: groupId,
+            status: 1
+        };
+        var groupDetail = await Group.findOne(filter).populate({
+            path: 'createdBy',
+            select: 'name'
+        }).slice('members', 10)
+        res.status(200).send({
+            success: 1,
+            imageBase: groupConfig.imageBase,
+            item: groupDetail
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+// *** Append members to a group ****
+exports.appendMembers = async (req, res) => {
+    var members = req.body.members;
+    var groupId = req.params.id;
+    if (!members) {
+        return res.status(400).send({
+            success: 0,
+            message: 'Members cannot be empty'
+        })
+    }
+    if (!Array.isArray(members)) {
+        return res.status(400).send({
+            success: 0,
+            message: 'members param should be an array of memberIds'
+        })
+    }
+    try {
+        var filter = {
+            _id: groupId,
+            status: 1
+        };
+        var promiseArray = [];
+        for (var i = 0; i < members.length; i++) {
+            promiseArray.push(members[i]);
+            var appendMembers = await Group.updateOne(filter, {
+                $push: {
+                    members: members[i]
+                }
+            })
+        }
+        Promise.all(promiseArray).then(result => {
+            res.status(200).send({
+                success: 1,
+                message: 'Members added successfully'
+            })
+        })
+
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+// *** Remove member from group ***
+exports.removeMember = async (req, res) => {
+    var groupId = req.params.id;
+    var memberId = req.body.memberId;
+    if (!memberId) {
+        return res.status(400).send({
+            success: 0,
+            message: 'memberId cannot be empty'
+        })
+    }
+    try {
+        var filter = {
+            _id: groupId,
+            status: 1
+        };
+        var removeMember = await Group.updateOne(filter, {
+            $pullAll: {
+                members: [memberId]
+            }
+        });
+        res.status(200).send({
+            success: 1,
+            message: 'Member removed successfully'
         })
     } catch (err) {
         res.status(500).send({
