@@ -19,7 +19,8 @@ module.exports = (app) => {
     app.patch('/matrimonies/:id/edit-profile', auth, imageUpload.single('image'), matrimony.editProfile);
     app.get('/matrimonies/matches', auth, matrimonyValidator.validator('getMatches'), matrimony.getMatches);
     app.post('/matrimonies/send-request', auth, matrimonyValidator.validator('sendRequest'), matrimony.sendRequest);
-    app.get('/matrimonies/my-requests', auth, matrimony.myRequests);
+    app.get('/matrimonies/my-requests', auth, matrimony.myRequests); 
+    app.get('/matrimonies/sent-requests', auth, matrimony.sentRequestsList);
     app.patch('/matrimonies/request/accept', auth, matrimonyValidator.validator('accept'), matrimony.acceptRequest);
     app.patch('/matrimonies/request/ignore', auth, matrimonyValidator.validator('reject'), matrimony.ignoreRequest);
 };

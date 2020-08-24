@@ -1,4 +1,5 @@
 var Post = require('../models/post.model');
+var EventCategory = require('../models/eventCategory.model');
 var constant = require('../helpers/constants');
 var eventType = constant.TYPE_EVENT;
 var ObjectId = require('mongoose').Types.ObjectId;
@@ -26,10 +27,13 @@ exports.list = async (req, res) => {
         var projection = {
             name: 1,
             image: 1,
-            timing: 1,
-            venue: 1
+            timings: 1,
+            venue: 1,
+            visitors: 1,
+            exhibitors: 1,
+            categoryId: 1
         };
-        var listEvents = await Post.find(filter, projection, pageParams).limit(perPage).sort({
+        var listEvents = await Post.find(filter, projection, pageParams).populate('categoryId').limit(perPage).sort({
             'tsCreatedAt': -1
         });
         var itemsCount = await Post.countDocuments(filter);

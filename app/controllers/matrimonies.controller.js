@@ -225,13 +225,23 @@ exports.getMatches = async (req, res) => {
         limit: perPage
     };
     var matrimonyId = req.body.matrimonyId;
-    var gender = req.body.gender;
-    if (gender == 'female') {
-        gender = 'male'
-    } else {
-        gender = 'female'
-    }
     try {
+        var findGender = await Matrimony.findOne({
+            _id: matrimonyId,
+            status: 1
+        });
+        if (!findGender) {
+            return res.status(200).send({
+                success: 0,
+                message: 'Matrimony profile not found'
+            })
+        }
+        var gender = findGender.gender;
+        if (gender == 'female') {
+            gender = 'male'
+        } else {
+            gender = 'female'
+        }
         var filter = {
             gender: gender,
             status: 1
@@ -258,7 +268,7 @@ exports.getMatches = async (req, res) => {
             hasNextPage: hasNextPage,
             totalItems: itemsCount,
             totalPages: totalPages
-        }
+        };
         res.status(200).send({
             success: 1,
             imageBase: matrimonyConfig.imageBase,
@@ -316,6 +326,16 @@ exports.sendRequest = async (req, res) => {
 exports.myRequests = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || matrimonyConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : matrimonyConfig.resultsPerPage;
+    var offset = (page - 1) * perPage;
+    var pageParams = {
+        skip: offset,
+        limit: perPage
+    };
     try {
         var filter = {
             userId: userId,
@@ -324,12 +344,73 @@ exports.myRequests = async (req, res) => {
         var projection = {
             matrimonyId: 1
         };
-        var myRequestsList = await IncomingRequest.find(filter, projection).populate({
+        var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
             path: 'matrimonyId',
             select: 'name profession age height nativePlace workingPlace'
-        });
+        }).limit(perPage);
+        var itemsCount = await IncomingRequest.countDocuments(filter);
+        totalPages = itemsCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages
+        };
         res.status(200).send({
             success: 1,
+            pagination: pagination,
+            items: myRequestsList
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.sentRequestsList = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || matrimonyConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : matrimonyConfig.resultsPerPage;
+    var offset = (page - 1) * perPage;
+    var pageParams = {
+        skip: offset,
+        limit: perPage
+    };
+    try {
+        var filter = {
+            userId: userId,
+            status: 1
+        };
+        var projection = {
+            matrimonyId: 1
+        };
+        var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
+            path: 'matrimonyId',
+            select: 'name profession age height nativePlace workingPlace'
+        }).limit(perPage);
+        var itemsCount = await OutgoingRequest.countDocuments(filter);
+        totalPages = itemsCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages
+        };
+        res.status(200).send({
+            success: 1,
+            pagination: pagination,
             items: myRequestsList
         })
     } catch (err) {

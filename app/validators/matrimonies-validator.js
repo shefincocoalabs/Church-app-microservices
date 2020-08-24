@@ -32,7 +32,6 @@ exports.validator = (method) => {
         case 'getMatches': {
             return [
                 check('matrimonyId', 'MatrimonyId is required').notEmpty(),
-                check('age', 'Age is required').notEmpty(),
                 (req, res, next) => {
                     const errors = validationResult(req);
                     if (!errors.isEmpty()) {
