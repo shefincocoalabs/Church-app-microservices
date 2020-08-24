@@ -20,13 +20,11 @@ var options = {
         }
     }
 };
-
-const ChurchSchema = mongoose.Schema({
+const UserRoleSchema = mongoose.Schema({
     name: String,
-    paymentGatewayKey : String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
 
 }, options);
-module.exports = mongoose.model('Church', ChurchSchema, 'Churchs');
+module.exports = mongoose.model('UserRole', UserRoleSchema, 'UserRoles');
