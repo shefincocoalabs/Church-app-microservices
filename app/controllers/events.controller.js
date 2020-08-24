@@ -28,6 +28,7 @@ exports.list = async (req, res) => {
             name: 1,
             image: 1,
             timing: 1,
+            timings : 1,
             venue: 1,
             categoryId: 1
         };
