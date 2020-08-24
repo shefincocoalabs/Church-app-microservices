@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 function transform(ret) {
     ret.id = ret._id;
     ret.user = ret.userId;
+    ret.category = ret.categoryId;
+    delete ret.categoryId;
     delete ret.userId;
     delete ret._id;
     delete ret.status;
