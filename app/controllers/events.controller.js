@@ -85,7 +85,7 @@ exports.detail = async (req, res) => {
             name: 1,
             detail: 1,
             image: 1,
-            timing: 1,
+            timings: 1,
             venue: 1,
             visitors: 1,
             exhibitors: 1,
