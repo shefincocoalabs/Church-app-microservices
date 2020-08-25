@@ -1,5 +1,5 @@
 var Sermons = require('../models/post.model');
-var Paster = require('../models/paster.model');
+var User = require('../models/user.model');
 var config = require('../../config/app.config.js');
 var constant = require('../helpers/constants');
 var sermonsType = constant.TYPE_SERMONS;

@@ -1,7 +1,11 @@
 var Paster = require('../models/paster.model');
+var User = require('../models/user.model');
+var UserRole = require('../models/userRole.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var pasterConfig = config.pasters;
+var constant = require('../helpers/constants');
+var subAdminType = constant.SUB_ADMIN_USER;
 
 // *** Pasters List ***
 exports.list = async (req, res) => {
@@ -18,14 +22,24 @@ exports.list = async (req, res) => {
         limit: perPage
     };
     try {
-        var pastersList = await Paster.find({
+        var filter = {
+            name: subAdminType,
             status: 1
-        }, {}, pageParams).limit(perPage).sort({
-            'tsCreatedAt': -1
-        });
-        var itemsCount = await Paster.countDocuments({
-            status: 1
-        });
+        };
+        var projection = {
+            name: 1,
+            designation: 1,
+            image: 1
+        };
+        var findUserRole = await UserRole.findOne(filter);
+        var roleId = findUserRole._id;
+        var findCriteria = {
+            roles: {
+                $in: [roleId]
+            }
+        }
+        var pastersList = await User.find(findCriteria, projection, pageParams).limit(perPage);
+        var itemsCount = await User.countDocuments(findCriteria);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -72,7 +86,15 @@ exports.detail = async (req, res) => {
             _id: id,
             status: 1
         };
-        var pasterDetail = await Paster.findOne(filter);
+        var projection = {
+            name: 1,
+            designation: 1,
+            image: 1,
+            phone: 1,
+            address: 1,
+            about: 1,
+        };
+        var pasterDetail = await User.findOne(filter, projection);
         res.status(200).send({
             success: 1,
             imageBase: pasterConfig.imageBase,

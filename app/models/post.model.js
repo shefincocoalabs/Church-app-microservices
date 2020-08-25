@@ -37,11 +37,11 @@ const PostSchema = mongoose.Schema({
     timing: Array,
     timings: [{
         date: Date,
-        startTime:String,
-        endTime:String,
+        startTime: String,
+        endTime: String,
     }],
-    visitors : String,
-    exhibitors : String,
+    visitors: String,
+    exhibitors: String,
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'EventCategory'
@@ -70,7 +70,7 @@ const PostSchema = mongoose.Schema({
     }],
     sermonsCreatedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Paster'
+        ref: 'User'
     },
     feedCreatedBy: {
         type: mongoose.Schema.Types.ObjectId,

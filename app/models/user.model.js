@@ -23,9 +23,11 @@ var options = {
 const UserSchema = mongoose.Schema({
     name: String,
     email: String,
+    designation: String,
     image: String,
     phone: String,
     address: String,
+    about: String,
     church: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Church'
@@ -47,7 +49,6 @@ const UserSchema = mongoose.Schema({
         },
         relation: String
     }],
-    userType: String,
     roles: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserRole'

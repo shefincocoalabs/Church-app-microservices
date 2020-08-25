@@ -5,5 +5,6 @@ module.exports = Object.freeze({
    TYPE_SERMONS: "sermons",
    PENDING_FEED : "Pending",
    APPROVED_FEED : "Approved",
-   REJECTED_FEED : "Rejected"
+   REJECTED_FEED : "Rejected",
+   SUB_ADMIN_USER : "subAdmin"
 });

@@ -1,8 +1,12 @@
 var Group = require('../models/group.model');
 var User = require('../models/user.model');
+var UserRole = require('../models/userRole.model');
 var config = require('../../config/app.config.js');
+var ObjectId = require('mongoose').Types.ObjectId;
 var groupConfig = config.groups;
 var usersConfig = config.users;
+var constant = require('../helpers/constants');
+var subAdminType = constant.SUB_ADMIN_USER;
 
 // *** Create Group ***
 exports.create = async (req, res) => {
@@ -16,19 +20,16 @@ exports.create = async (req, res) => {
         })
     }
     var fileName = file.filename;
-    console.log(fileName);
     var name = req.body.name;
-    console.log(name);
     var members = req.body.members;
-    console.log(members);
 
     try {
-        // if (!Array.isArray(members)) {
-        //     return res.status(400).send({
-        //         success: 0,
-        //         message: 'members param should be an array of memberIds'
-        //     })
-        // }
+        if (!Array.isArray(members)) {
+            return res.status(400).send({
+                success: 0,
+                message: 'members param should be an array of memberIds'
+            })
+        }
         const newGroup = new Group({
             name: name,
             image: fileName,
@@ -88,6 +89,7 @@ exports.list = async (req, res) => {
 exports.membersList = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
+    var groupId = req.body.groupId;
     var params = req.query;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
@@ -100,7 +102,26 @@ exports.membersList = async (req, res) => {
     };
     try {
         var filter = {
+            name: subAdminType,
             status: 1
+        };
+        var findUserRole = await UserRole.findOne(filter);
+        var roleId = findUserRole._id;
+        var findGroup = await Group.findOne({
+            _id: groupId,
+            status: 1
+        });
+        var groupMembers = findGroup.members;
+        var filter = {
+            $and: [{
+                _id: {
+                    $nin: groupMembers
+                }
+            }, {
+                roles: {
+                    $nin: [roleId]
+                }
+            }]
         };
         var projection = {
             name: 1,
@@ -138,6 +159,19 @@ exports.membersList = async (req, res) => {
 // *** Group detail ***
 exports.groupDetail = async (req, res) => {
     var groupId = req.params.id;
+    var isValidId = ObjectId.isValid(groupId);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
     try {
         var filter = {
             _id: groupId,
@@ -167,11 +201,18 @@ exports.groupDetail = async (req, res) => {
 exports.appendMembers = async (req, res) => {
     var members = req.body.members;
     var groupId = req.params.id;
-    if (!members) {
-        return res.status(400).send({
+    var isValidId = ObjectId.isValid(groupId);
+    if (!isValidId) {
+        var responseObj = {
             success: 0,
-            message: 'Members cannot be empty'
-        })
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
     }
     if (!Array.isArray(members)) {
         return res.status(400).send({
@@ -212,11 +253,18 @@ exports.appendMembers = async (req, res) => {
 exports.removeMember = async (req, res) => {
     var groupId = req.params.id;
     var memberId = req.body.memberId;
-    if (!memberId) {
-        return res.status(400).send({
+    var isValidId = ObjectId.isValid(groupId);
+    if (!isValidId) {
+        var responseObj = {
             success: 0,
-            message: 'memberId cannot be empty'
-        })
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
     }
     try {
         var filter = {
