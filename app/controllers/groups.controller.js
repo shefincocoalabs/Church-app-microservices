@@ -113,8 +113,8 @@ exports.list = async (req, res) => {
 exports.membersList = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var groupId = req.body.groupId;
     var params = req.query;
+    var groupId = params.groupId;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
     var perPage = Number(params.perPage) || groupConfig.resultsPerPage;
@@ -135,6 +135,12 @@ exports.membersList = async (req, res) => {
             _id: groupId,
             status: 1
         });
+        if (!findGroup) {
+            return res.status(200).send({
+                success: 0,
+                message: 'Group not found'
+            })
+        }
         var groupMembers = findGroup.members;
         var filter = {
             $and: [{

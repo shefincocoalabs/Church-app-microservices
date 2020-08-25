@@ -5,6 +5,10 @@ const DonationSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    churchId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Church'
+    },
     transactionId: String,
     amount: String,
     paidStatus: Boolean,

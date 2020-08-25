@@ -605,9 +605,9 @@
     }
   }
 
-// *** Donation ***
+  // *** Donation ***
 
-  exports.donation = async(req,res) => {
+  exports.donation = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     var params = req.body;
@@ -616,26 +616,32 @@
     var paidStatus = params.paidStatus;
     var paidOn = params.paidOn;
     try {
-        const newPayment = new Donation({
-            userId: userId,
-            transactionId: transactionId,
-            amount: amount,
-            paidStatus: paidStatus,
-            paidOn: paidOn,
-            status: 1,
-            tsCreatedAt: Date.now(),
-            tsModifiedAt: null
-        });
-        var savePayment = await newPayment.save();
-        res.status(200).send({
-            success: 1,
-            message: 'Donation successfull'
-        })
+      var findUser = await Users.findOne({
+        _id: userId,
+        status: 1
+      });
+      var churchId = findUser.churchId;
+      const newPayment = new Donation({
+        userId: userId,
+        churchId: churchId,
+        transactionId: transactionId,
+        amount: amount,
+        paidStatus: paidStatus,
+        paidOn: paidOn,
+        status: 1,
+        tsCreatedAt: Date.now(),
+        tsModifiedAt: null
+      });
+      var savePayment = await newPayment.save();
+      res.status(200).send({
+        success: 1,
+        message: 'Donation successfull'
+      })
     } catch (err) {
-        res.status(500).send({
-            success: 0,
-            message: err.message
-        })
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
     }
   }
 

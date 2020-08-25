@@ -30,6 +30,10 @@ const CharitiesSchema = mongoose.Schema({
     fund: String,
     phone: String,
     about: String,
+    churchId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Church'
+    },
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
