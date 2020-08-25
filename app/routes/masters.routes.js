@@ -5,5 +5,5 @@ module.exports = (app) => {
     app.get('/masters/church/list', masters.churchList);
     app.get('/masters/:id/parish/list', masters.parishList);
     app.get('/masters/:id/parish-ward/list', masters.parishWardList);
-    app.get('/masters/payment-gatway/key',auth, masters.getKey);
+    app.get('/masters/payment-gateway/key',auth, masters.getKey);
 };
