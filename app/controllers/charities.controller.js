@@ -165,9 +165,8 @@ if(charityPaymentData){
         totalReceivedAmount = totalReceivedAmount + parseFloat(amount);
     }
     var percentage  = (totalReceivedAmount/totalFund);
-    percentage = Number((percentage).toFixed(2));
     var percentageData = percentage * 100;
-    percentageObj.percentage = percentageData;
+    percentageObj.percentage = Math.round(percentageData * 10) / 10;
     percentageObj.neededAmount = (totalFund - totalReceivedAmount);
 
 
