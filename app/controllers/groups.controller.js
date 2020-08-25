@@ -16,16 +16,19 @@ exports.create = async (req, res) => {
         })
     }
     var fileName = file.filename;
+    console.log(fileName);
     var name = req.body.name;
+    console.log(name);
     var members = req.body.members;
+    console.log(members);
 
     try {
-        if (!Array.isArray(members)) {
-            return res.status(400).send({
-                success: 0,
-                message: 'members param should be an array of memberIds'
-            })
-        }
+        // if (!Array.isArray(members)) {
+        //     return res.status(400).send({
+        //         success: 0,
+        //         message: 'members param should be an array of memberIds'
+        //     })
+        // }
         const newGroup = new Group({
             name: name,
             image: fileName,
