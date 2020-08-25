@@ -5,6 +5,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var matrimonyConfig = config.matrimony;
 
+// *** Create Profile ***
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -65,6 +66,7 @@ exports.create = async (req, res) => {
     }
 }
 
+// *** Get profile details ***
 exports.getProfile = async (req, res) => {
     var id = req.params.id;
     var isValidId = ObjectId.isValid(id);
@@ -111,6 +113,7 @@ exports.getProfile = async (req, res) => {
     }
 }
 
+// *** Edit Profile ***
 exports.editProfile = async (req, res) => {
     var id = req.params.id;
     var isValidId = ObjectId.isValid(id);
@@ -211,6 +214,7 @@ exports.editProfile = async (req, res) => {
     }
 }
 
+// *** Get Matches List ***
 exports.getMatches = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -283,6 +287,7 @@ exports.getMatches = async (req, res) => {
     }
 }
 
+// *** Send request ***
 exports.sendRequest = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -323,6 +328,7 @@ exports.sendRequest = async (req, res) => {
     }
 }
 
+// *** My Received Requests ***
 exports.myRequests = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -372,6 +378,7 @@ exports.myRequests = async (req, res) => {
     }
 }
 
+// *** My send Requests ***
 exports.sentRequestsList = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -421,6 +428,7 @@ exports.sentRequestsList = async (req, res) => {
     }
 }
 
+// *** Accept Request ***
 exports.acceptRequest = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
@@ -460,6 +468,7 @@ exports.acceptRequest = async (req, res) => {
     }
 }
 
+// *** Ignore Request ***
 exports.ignoreRequest = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;

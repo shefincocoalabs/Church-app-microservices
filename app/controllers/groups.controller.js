@@ -58,7 +58,16 @@ exports.create = async (req, res) => {
 exports.list = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || groupConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : groupConfig.resultsPerPage;
+    var offset = (page - 1) * perPage;
+    var pageParams = {
+        skip: offset,
+        limit: perPage
+    };
     try {
         var filter = {
             createdBy: userId,
@@ -66,15 +75,30 @@ exports.list = async (req, res) => {
         };
         var projection = {
             name: 1,
-            image: 1
+            image: 1,
+            tsCreatedAt: 1
         };
-        var groupsList = await Group.find(filter, projection).populate({
+        var groupsList = await Group.find(filter, projection, pageParams).populate({
             path: 'createdBy',
             select: 'name'
-        })
+        }).limit(perPage).sort({
+            'tsCreatedAt': -1
+        });
+        var itemsCount = await Group.countDocuments(filter);
+        totalPages = itemsCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages
+        }
         res.status(200).send({
             success: 1,
             imageBase: groupConfig.imageBase,
+            pagination: pagination,
             items: groupsList
         })
     } catch (err) {
@@ -287,3 +311,67 @@ exports.removeMember = async (req, res) => {
         })
     }
 }
+
+// *** List all members in a group ***
+exports.allMembers = async (req, res) => {
+    var groupId = req.params.id;
+    var isValidId = ObjectId.isValid(groupId);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || groupConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : groupConfig.resultsPerPage;
+    try {
+        var filter = {
+            _id: groupId,
+            status: 1
+        };
+        var projection = {
+            members: 1
+        };
+        var findGroup = await Group.findOne(filter, projection).populate({
+            path: 'members',
+            select: 'name image email'
+        })
+        var members = findGroup.members;
+        var itemsCount = members.length;
+        members = paginate(members, perPage, page);
+        var totalPages = itemsCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages,
+        };
+        res.status(200).send({
+            success: 1,
+            imageBase: usersConfig.imageBase,
+            pagination: pagination,
+            items: members
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+function paginate(array, page_size, page_number) {
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+};

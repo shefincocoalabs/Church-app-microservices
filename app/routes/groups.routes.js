@@ -16,6 +16,7 @@ module.exports = (app) => {
     app.get('/groups/list', auth, groups.list);
     app.get('/groups/memberslist', auth, groupsValidator.validator('list-members'), groups.membersList);
     app.get('/groups/:id/detail', auth, groups.groupDetail);
+    app.get('/groups/:id/all-members', auth, groups.allMembers);
     app.post('/groups/create', auth ,groupImageUpload.single('image'), groupsValidator.validator('createGroup'), groups.create);
     app.patch('/groups/:id/append-members', auth,groupsValidator.validator('append-members'), groups.appendMembers);
     app.patch('/groups/:id/remove-member', auth, groupsValidator.validator('remove-member'), groups.removeMember);
