@@ -143,10 +143,13 @@ exports.groupDetail = async (req, res) => {
             _id: groupId,
             status: 1
         };
-        var groupDetail = await Group.findOne(filter).populate({
+        var groupDetail = await Group.findOne(filter).populate([{
             path: 'createdBy',
             select: 'name'
-        }).slice('members', 10)
+        }, {
+            path: 'members',
+            select: 'name email'
+        }]).slice('members', 10)
         res.status(200).send({
             success: 1,
             imageBase: groupConfig.imageBase,
