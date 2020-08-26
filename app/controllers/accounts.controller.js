@@ -6,6 +6,7 @@
   const Post = require('../models/post.model');
   const Matrimnoy = require('../models/matrimony.model');
   const Donation = require('../models/donation.model');
+  const UserRole = require('../models/userRole.model');
   const config = require('../../config/app.config.js');
   var otpConfig = config.otp;
   var usersConfig = config.users;
@@ -16,7 +17,7 @@
   const uuidv4 = require('uuid/v4');
   const constant = require('../helpers/constants');
   const feedType = constant.TYPE_FEEDPOST;
-
+  var subAdminType = constant.SUB_ADMIN_USER;
 
   //   **** Sign-up ****
 
@@ -499,12 +500,37 @@
     var perPage = Number(params.perPage) || usersConfig.resultsPerPage;
     perPage = perPage > 0 ? perPage : usersConfig.resultsPerPage;
     try {
-      var filter = {
+      var findUserRole = await UserRole.findOne({
+        name: subAdminType,
+        status: 1
+      });
+      var roleId = findUserRole._id;
+      var userData = await Users.findOne({
         _id: userId,
         status: 1
-      };
+      });
+      var familyMembers = userData.familyMembers;
       var projection = {
         familyMembers: 1
+      };
+      var filter = {
+        $and: [{
+            _id: {
+              $ne: userId
+            }
+          },
+          {
+            _id: {
+              $nin: familyMembers
+            }
+          }, {
+            roles: {
+              $nin: [roleId]
+            }
+          }, {
+            status: 1
+          }
+        ]
       };
       var listFamilyMembers = await Users.findOne(filter, projection).populate({
         path: 'familyMembers.familyMember',

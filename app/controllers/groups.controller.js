@@ -145,6 +145,10 @@ exports.membersList = async (req, res) => {
         var filter = {
             $and: [{
                 _id: {
+                    $ne: userId
+                }
+            }, {
+                _id: {
                     $nin: groupMembers
                 }
             }, {
