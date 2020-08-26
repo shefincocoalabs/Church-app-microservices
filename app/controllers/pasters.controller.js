@@ -49,7 +49,7 @@ exports.list = async (req, res) => {
             hasNextPage: hasNextPage,
             totalItems: itemsCount,
             totalPages: totalPages
-        }
+        };
         res.status(200).send({
             success: 1,
             pagination: pagination,

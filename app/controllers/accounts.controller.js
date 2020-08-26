@@ -1,4 +1,5 @@
   const Users = require('../models/user.model');
+  const UserRole = require('../models/userRole.model');
   const Otp = require('../models/otp.model');
   const Church = require('../models/church.model');
   const Parish = require('../models/parish.model');
@@ -6,7 +7,6 @@
   const Post = require('../models/post.model');
   const Matrimnoy = require('../models/matrimony.model');
   const Donation = require('../models/donation.model');
-  const UserRole = require('../models/userRole.model');
   const config = require('../../config/app.config.js');
   var otpConfig = config.otp;
   var usersConfig = config.users;
@@ -17,7 +17,7 @@
   const uuidv4 = require('uuid/v4');
   const constant = require('../helpers/constants');
   const feedType = constant.TYPE_FEEDPOST;
-  var subAdminType = constant.SUB_ADMIN_USER;
+  const subAdminType = constant.SUB_ADMIN_USER;
 
   //   **** Sign-up ****
 
@@ -500,37 +500,12 @@
     var perPage = Number(params.perPage) || usersConfig.resultsPerPage;
     perPage = perPage > 0 ? perPage : usersConfig.resultsPerPage;
     try {
-      var findUserRole = await UserRole.findOne({
-        name: subAdminType,
-        status: 1
-      });
-      var roleId = findUserRole._id;
-      var userData = await Users.findOne({
+      var filter = {
         _id: userId,
         status: 1
-      });
-      var familyMembers = userData.familyMembers;
+      };
       var projection = {
         familyMembers: 1
-      };
-      var filter = {
-        $and: [{
-            _id: {
-              $ne: userId
-            }
-          },
-          {
-            _id: {
-              $nin: familyMembers
-            }
-          }, {
-            roles: {
-              $nin: [roleId]
-            }
-          }, {
-            status: 1
-          }
-        ]
       };
       var listFamilyMembers = await Users.findOne(filter, projection).populate({
         path: 'familyMembers.familyMember',
@@ -662,6 +637,88 @@
       res.status(200).send({
         success: 1,
         message: 'Donation successfull'
+      })
+    } catch (err) {
+      res.status(500).send({
+        success: 0,
+        message: err.message
+      })
+    }
+  }
+
+  // *** List all members excluding family members ***
+  exports.listAllMembers = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    console.log(userId);
+    var params = req.query;
+    var page = Number(params.page) || 1;
+    page = page > 0 ? page : 1;
+    var perPage = Number(params.perPage) || usersConfig.resultsPerPage;
+    perPage = perPage > 0 ? perPage : usersConfig.resultsPerPage;
+    var offset = (page - 1) * perPage;
+    var pageParams = {
+      skip: offset,
+      limit: perPage
+    };
+    try {
+      var findUserRole = await UserRole.findOne({
+        name: subAdminType,
+        status: 1
+      });
+      var roleId = findUserRole._id;
+      var userData = await Users.findOne({
+        _id: userId,
+        status: 1
+      });
+      var familyMembers = userData.familyMembers;
+      var familyMemberIds = familyMembers.map(function (x) {
+        return x.familyMember
+      });
+      var filter = {
+        $and: [{
+            _id: {
+              $ne: userId
+            }
+          },
+          {
+            _id: {
+              $nin: familyMemberIds
+            }
+          },
+          {
+            roles: {
+              $nin: [roleId]
+            }
+          }, {
+            status: 1
+          }
+        ]
+      };
+      var projection = {
+        name: 1,
+        email: 1,
+        image: 1,
+        tsCreatedAt: 1
+      };
+      var members = await Users.find(filter, projection, pageParams).limit(perPage).sort({
+        'tsCreatedAt': -1
+      });
+      var itemsCount = await Users.countDocuments(filter);
+      totalPages = itemsCount / perPage;
+      totalPages = Math.ceil(totalPages);
+      var hasNextPage = page < totalPages;
+      var pagination = {
+        page: page,
+        perPage: perPage,
+        hasNextPage: hasNextPage,
+        totalItems: itemsCount,
+        totalPages: totalPages
+      };
+      res.status(200).send({
+        success: 1,
+        pagination: pagination,
+        items: members
       })
     } catch (err) {
       res.status(500).send({
