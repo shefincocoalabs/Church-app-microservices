@@ -17,21 +17,6 @@ exports.validator = (method) => {
                 }
             ]
         }
-        case 'list-members': {
-            return [
-                check('groupId', 'groupId is required').notEmpty(),
-                (req, res, next) => {
-                    const errors = validationResult(req);
-                    if (!errors.isEmpty()) {
-                        return res.status(422).json({
-                            success: 0,
-                            errors: errors.array()
-                        })
-                    }
-                    next()
-                }
-            ]
-        }
         case 'append-members': {
             return [
                 check('members', 'members(Array) is required').notEmpty(),

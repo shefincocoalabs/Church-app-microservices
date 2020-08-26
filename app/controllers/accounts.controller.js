@@ -650,7 +650,6 @@
   exports.listAllMembers = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    console.log(userId);
     var params = req.query;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;

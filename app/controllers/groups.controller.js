@@ -124,6 +124,7 @@ exports.membersList = async (req, res) => {
         skip: offset,
         limit: perPage
     };
+    var findCriteria;
     try {
         var filter = {
             name: subAdminType,
@@ -131,41 +132,56 @@ exports.membersList = async (req, res) => {
         };
         var findUserRole = await UserRole.findOne(filter);
         var roleId = findUserRole._id;
-        var findGroup = await Group.findOne({
-            _id: groupId,
-            status: 1
-        });
-        if (!findGroup) {
-            return res.status(200).send({
-                success: 0,
-                message: 'Group not found'
-            })
+        if (groupId != '') {
+            var findGroup = await Group.findOne({
+                _id: groupId,
+                status: 1
+            });
+            if (!findGroup) {
+                return res.status(200).send({
+                    success: 0,
+                    message: 'Group not found'
+                })
+            }
+            var groupMembers = findGroup.members;
+            findCriteria = {
+                $and: [{
+                    _id: {
+                        $ne: userId
+                    }
+                }, {
+                    _id: {
+                        $nin: groupMembers
+                    }
+                }, {
+                    roles: {
+                        $nin: [roleId]
+                    }
+                }]
+            };
+        } else {
+            findCriteria = {
+                $and: [{
+                    _id: {
+                        $ne: userId
+                    }
+                }, {
+                    roles: {
+                        $nin: [roleId]
+                    }
+                }]
+            };
         }
-        var groupMembers = findGroup.members;
-        var filter = {
-            $and: [{
-                _id: {
-                    $ne: userId
-                }
-            }, {
-                _id: {
-                    $nin: groupMembers
-                }
-            }, {
-                roles: {
-                    $nin: [roleId]
-                }
-            }]
-        };
+
         var projection = {
             name: 1,
             image: 1,
             email: 1
         };
-        var listMembers = await User.find(filter, projection, pageParams).limit(perPage).sort({
+        var listMembers = await User.find(findCriteria, projection, pageParams).limit(perPage).sort({
             'tsCreatedAt': -1
         });
-        var itemsCount = await User.countDocuments(filter);
+        var itemsCount = await User.countDocuments(findCriteria);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -183,10 +199,11 @@ exports.membersList = async (req, res) => {
             items: listMembers
         })
     } catch (err) {
-        res.status(500).send({
-            success: 0,
-            message: err.message
-        })
+        // res.status(500).send({
+        //     success: 0,
+        //     message: err.message
+        // })
+        console.log(err);
     }
 }
 
