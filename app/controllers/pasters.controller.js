@@ -1,4 +1,3 @@
-var Paster = require('../models/paster.model');
 var User = require('../models/user.model');
 var UserRole = require('../models/userRole.model');
 var ObjectId = require('mongoose').Types.ObjectId;
