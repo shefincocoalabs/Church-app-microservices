@@ -10,7 +10,7 @@ const DonationSchema = mongoose.Schema({
         ref: 'Church'
     },
     transactionId: String,
-    amount: String,
+    amount: Number,
     paidStatus: Boolean,
     paidOn: Date,
     status: Number,
