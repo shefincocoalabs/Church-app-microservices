@@ -2,6 +2,7 @@ var Post = require('../models/post.model');
 var User = require('../models/user.model');
 var constant = require('../helpers/constants');
 var buyorsellType = constant.TYPE_BUYORSELL;
+var approvedFeed = constant.APPROVED_FEED;
 var config = require('../../config/app.config.js');
 var buyorsellConfig = config.buyorsell;
 var usersConfig = config.users;
@@ -40,6 +41,7 @@ exports.create = async (req, res) => {
             model: model,
             kilometer: kilometer,
             additionalInfo: additionalInfo,
+            feedStatus: approvedFeed,
             status: 1,
             tsCreatedAt: Date.now(),
             tsModifiedAt: null

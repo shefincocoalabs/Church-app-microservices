@@ -140,7 +140,9 @@ exports.list = async (req, res) => {
                         $options: 'i'
                     }
                 }
-            ]
+            ],
+            feedStatus: approvedFeed,
+            status: 1
         }
         listPosts = await Post.find(filter, projection, pageParams).populate([{
             path: 'userId',
