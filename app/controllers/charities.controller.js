@@ -19,7 +19,7 @@ exports.list = async (req, res) => {
     };
     try {
         var filter = {
-
+            status : 1
         };
         var projection = {
             caption: 1,
