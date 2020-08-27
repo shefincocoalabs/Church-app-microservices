@@ -52,7 +52,7 @@ exports.create = async (req, res) => {
                 message: 'User not found'
             })
         }
-        var churchId = findUser.churchId;
+        var churchId = findUser.church;
         const newFeed = new Post({
             contentType: feedType,
             postContent: feedContent,
