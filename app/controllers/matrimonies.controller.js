@@ -359,9 +359,21 @@ exports.myRequests = async (req, res) => {
             matrimonyId: 1
         };
         var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
-            path: 'matrimonyId',
-            select: 'name profession age height nativePlace workingPlace'
+            path: 'senderMatrimonyId',
+            select: 'name profession age image height nativePlace workingPlace'
         }).limit(perPage);
+        var itemsArray = [];
+        for (var i = 0; i < myRequestsList.length; i++) {
+            var itemObj = {};
+            itemObj.id = myRequestsList[i].senderMatrimonyId.id;
+            itemObj.name = myRequestsList[i].senderMatrimonyId.name;
+            itemObj.age = myRequestsList[i].senderMatrimonyId.age;
+            itemObj.image = myRequestsList[i].senderMatrimonyId.image;
+            itemObj.height = myRequestsList[i].senderMatrimonyId.height;
+            itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
+            itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemsArray.push(itemObj)
+        };
         var itemsCount = await IncomingRequest.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -375,8 +387,9 @@ exports.myRequests = async (req, res) => {
         };
         res.status(200).send({
             success: 1,
+            imageBase: matrimonyConfig.imageBase,
             pagination: pagination,
-            items: myRequestsList
+            items: itemsArray
         })
     } catch (err) {
         res.status(500).send({
@@ -409,9 +422,21 @@ exports.sentRequestsList = async (req, res) => {
             matrimonyId: 1
         };
         var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
-            path: 'matrimonyId',
-            select: 'name profession age height nativePlace workingPlace'
+            path: 'senderMatrimonyId',
+            select: 'name profession age image height nativePlace workingPlace'
         }).limit(perPage);
+        var itemsArray = [];
+        for (var i = 0; i < myRequestsList.length; i++) {
+            var itemObj = {};
+            itemObj.id = myRequestsList[i].senderMatrimonyId.id;
+            itemObj.name = myRequestsList[i].senderMatrimonyId.name;
+            itemObj.age = myRequestsList[i].senderMatrimonyId.age;
+            itemObj.image = myRequestsList[i].senderMatrimonyId.image;
+            itemObj.height = myRequestsList[i].senderMatrimonyId.height;
+            itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
+            itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemsArray.push(itemObj)
+        };
         var itemsCount = await OutgoingRequest.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -425,8 +450,9 @@ exports.sentRequestsList = async (req, res) => {
         };
         res.status(200).send({
             success: 1,
+            imageBase: matrimonyConfig.imageBase,
             pagination: pagination,
-            items: myRequestsList
+            items: itemsArray
         })
     } catch (err) {
         res.status(500).send({
