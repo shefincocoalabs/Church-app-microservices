@@ -1,5 +1,7 @@
 var User = require('../models/user.model');
 var UserRole = require('../models/userRole.model');
+var Designation = require('../models/designation.model');
+
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var pasterConfig = config.pasters;
@@ -37,7 +39,12 @@ exports.list = async (req, res) => {
                 $in: [roleId]
             }
         }
-        var pastersList = await User.find(findCriteria, projection, pageParams).limit(perPage);
+        var pastersList = await User.find(findCriteria, projection, pageParams)
+        .populate([{
+            path: 'designation',
+            select: { name: 1 }
+          }])
+        .limit(perPage);
         var itemsCount = await User.countDocuments(findCriteria);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -93,7 +100,11 @@ exports.detail = async (req, res) => {
             address: 1,
             about: 1,
         };
-        var pasterDetail = await User.findOne(filter, projection);
+        var pasterDetail = await User.findOne(filter, projection)
+        .populate([{
+            path: 'designation',
+            select: { name: 1 }
+          }])
         res.status(200).send({
             success: 1,
             imageBase: pasterConfig.imageBase,
