@@ -63,6 +63,9 @@ module.exports = {
   },
   livePrayers: {
     resultsPerPage: 30
+  },
+  notifications: {
+    resultsPerPage: 30
   }
 
 
