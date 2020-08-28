@@ -22,6 +22,7 @@ exports.create = async (req, res) => {
     var workPlace = params.workPlace;
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
+    var description = params.description;
     try {
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
@@ -47,6 +48,7 @@ exports.create = async (req, res) => {
             workPlace: workPlace,
             preferredgroomOrBrideAge: preferredgroomOrBrideAge,
             preferredgroomOrBrideHeight: preferredgroomOrBrideHeight,
+            description: description,
             createdBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -98,7 +100,8 @@ exports.getProfile = async (req, res) => {
             address: 1,
             nativePlace: 1,
             workPlace: 1,
-            image: 1
+            image: 1,
+            description: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
@@ -144,6 +147,7 @@ exports.editProfile = async (req, res) => {
     var workPlace = params.workPlace;
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
+    var description = params.description;
     var file = req.file;
     try {
         if (Object.keys(req.body).length === 0) {
@@ -191,6 +195,9 @@ exports.editProfile = async (req, res) => {
         }
         if (preferredgroomOrBrideHeight) {
             update.preferredgroomOrBrideHeight = preferredgroomOrBrideHeight;
+        }
+        if (description) {
+            update.description = description;
         }
         update.tsModifiedAt = Date.now();
         var filter = {
@@ -500,6 +507,68 @@ exports.ignoreRequest = async (req, res) => {
             success: 1,
             message: 'Request ignored successfully'
         });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+
+exports.appendImages = async (req, res) => {
+    var matrimonyId = req.params.id;
+    var files = req.files;
+    if (files == undefined) {
+        return res.status(400).send({
+            success: 0,
+            message: 'array of subImages required'
+        })
+    }
+    try {
+        var filter = {
+            _id: matrimonyId,
+            status: 1
+        };
+        for (var i = 0; i < files.length; i++) {
+            var update = {
+                $push: {
+                    subImages: files[i].filename
+                }
+            }
+            var updateSubImages = await Matrimony.updateOne(filter, update);
+        }
+        res.status(200).send({
+            success: 1,
+            message: 'Added successfully'
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+
+}
+
+exports.removeImage = async (req, res) => {
+    var matrimonyId = req.params.id;
+    var image = req.body.image;
+    try {
+        var filter = {
+            _id: matrimonyId,
+            status: 1
+        };
+        var update = {
+            $pullAll: {
+                subImages: [image]
+            }
+        };
+        var rempveImage = await Matrimony.updateOne(filter, update);
+        res.status(200).send({
+            success: 1,
+            message: 'image removed successfully'
+        })
     } catch (err) {
         res.status(500).send({
             success: 0,

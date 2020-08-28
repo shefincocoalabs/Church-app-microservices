@@ -23,4 +23,6 @@ module.exports = (app) => {
     app.get('/matrimonies/sent-requests', auth, matrimony.sentRequestsList);
     app.patch('/matrimonies/request/accept', auth, matrimonyValidator.validator('accept'), matrimony.acceptRequest);
     app.patch('/matrimonies/request/ignore', auth, matrimonyValidator.validator('reject'), matrimony.ignoreRequest);
+    app.patch('/matrimonies/:id/append-images', auth,imageUpload.array('images'),matrimony.appendImages);
+    app.patch('/matrimonies/:id/remove-image', auth,matrimonyValidator.validator('remove-image'),imageUpload.array('images'),matrimony.removeImage);
 };

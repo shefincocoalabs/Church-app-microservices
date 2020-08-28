@@ -16,6 +16,7 @@ exports.validator = (method) => {
                 check('workPlace', 'Work place is required').notEmpty(),
                 check('preferredgroomOrBrideAge', 'PreferredgroomOrBrideAge is required').notEmpty(),
                 check('preferredgroomOrBrideHeight', 'PreferredgroomOrBrideAge is required').notEmpty(),
+                check('description', 'Description is required').notEmpty(),
                 
                 (req, res, next) => {
                     const errors = validationResult(req);
@@ -80,6 +81,21 @@ exports.validator = (method) => {
             return [
                 check('userMatrimonyId', 'MatrimonyId of user is required').notEmpty(),
                 check('senderMatrimonyId', 'MatrimonyId of sender is required').notEmpty(),
+                (req, res, next) => {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(422).json({
+                            success: 0,
+                            errors: errors.array()
+                        })
+                    }
+                    next()
+                }
+            ]
+        }
+        case 'remove-image': {
+            return [
+                check('image', 'image is required').notEmpty(),
                 (req, res, next) => {
                     const errors = validationResult(req);
                     if (!errors.isEmpty()) {

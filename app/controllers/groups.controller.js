@@ -70,7 +70,15 @@ exports.list = async (req, res) => {
     };
     try {
         var filter = {
-            createdBy: userId,
+            $or: [{
+                    createdBy: userId
+                },
+                {
+                    members: {
+                        $in: userId
+                    }
+                }
+            ],
             status: 1
         };
         var projection = {
