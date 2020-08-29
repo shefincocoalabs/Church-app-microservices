@@ -52,6 +52,10 @@ exports.list = async (req, res) => {
         }).sort({
             'tsCreatedAt': -1
         });
+        sermonsList = JSON.parse(JSON.stringify(sermonsList));
+        for(let i = 0; i < sermonsList.length; i++){
+            sermonsList[i].tsCreatedAt = new Date(sermonsList[i].tsCreatedAt);
+        }
         var itemsCount = await Sermons.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
