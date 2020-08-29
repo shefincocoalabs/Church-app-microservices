@@ -107,6 +107,7 @@ exports.getProfile = async (req, res) => {
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
             success: 1,
+            imageBase: matrimonyConfig.imageBase,
             item: profileData
         })
     } catch (err) {
@@ -236,7 +237,7 @@ exports.getMatches = async (req, res) => {
         skip: offset,
         limit: perPage
     };
-    var matrimonyId = req.body.matrimonyId;
+    var matrimonyId = params.matrimonyId;
     try {
         var findGender = await Matrimony.findOne({
             _id: matrimonyId,
