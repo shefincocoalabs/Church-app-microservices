@@ -15,7 +15,7 @@ exports.validator = (method) => {
                 check('nativePlace', 'Native place is required').notEmpty(),
                 check('workPlace', 'Work place is required').notEmpty(),
                 check('preferredgroomOrBrideAge', 'PreferredgroomOrBrideAge is required').notEmpty(),
-                check('preferredgroomOrBrideHeight', 'PreferredgroomOrBrideAge is required').notEmpty(),
+                check('preferredgroomOrBrideHeight', 'PreferredgroomOrBrideHeight is required').notEmpty(),
                 check('description', 'Description is required').notEmpty(),
                 
                 (req, res, next) => {

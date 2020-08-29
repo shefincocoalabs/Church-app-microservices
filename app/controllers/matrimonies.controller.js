@@ -9,6 +9,7 @@ var matrimonyConfig = config.matrimony;
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
+    var file = req.file;
     var params = req.body;
     var name = params.name;
     var gender = params.gender;
@@ -24,6 +25,12 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
     try {
+        if(!file) {
+            return res.status(400).send({
+                success: 0,
+                message: 'image required'
+            })
+        }
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
             status: 1
@@ -38,7 +45,7 @@ exports.create = async (req, res) => {
             name: name,
             gender: gender,
             age: age,
-            image: '',
+            image: file.filename,
             height: height,
             weight: weight,
             education: education,
