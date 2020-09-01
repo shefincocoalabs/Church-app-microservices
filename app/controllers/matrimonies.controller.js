@@ -314,7 +314,7 @@ exports.editProfile = async (req, res) => {
             createdBy: userId,
             status: 1
         };
-        var updateProfile = await Matrimony.update(filter, update, {
+        var updateProfile = await Matrimony.updateOne(filter, update, {
             new: true,
             useFindAndModify: false
         });
@@ -360,7 +360,7 @@ exports.getMatches = async (req, res) => {
         if (gender == 'female') {
             gender = 'male'
         } else {
-            gender = 'female'
+            gender = 'Female'
         }
         var filter = {
             gender: gender,
@@ -375,7 +375,9 @@ exports.getMatches = async (req, res) => {
             height: 1,
             nativePlace: 1
         };
-        var matchesList = await Matrimony.find(filter, projection, pageParams).limit(perPage).sort({
+        var matchesList = await Matrimony.find(filter, projection, pageParams)
+        .limit(perPage)
+        .sort({
             'tsCreatedAt': -1
         });
         var itemsCount = await Matrimony.countDocuments(filter);
