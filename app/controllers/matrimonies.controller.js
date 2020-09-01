@@ -14,13 +14,13 @@ exports.create = async (req, res) => {
     console.log('file');
     console.log(file);
     console.log('file');
-    console.log('params');
     if (!file) {
         return res.send({
             success: 0,
             message: 'image required'
         })
     }
+    console.log('params');
     var params = req.body;
     console.log(params);
     console.log('params');
