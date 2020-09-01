@@ -14,14 +14,105 @@ exports.create = async (req, res) => {
     console.log('file');
     console.log(file);
     console.log('file');
-    if (!file) {
-        return res.status(400).send({
-            success: 0,
-            message: 'image required'
-        })
-    }
+
+
     console.log('params');
     var params = req.body;
+    if (!params.name || !params.gender || !params.age || !params.height ||
+        !params.weight || !params.education || !params.profession ||
+        !params.address || !params.nativePlace || !params.workPlace ||
+        !params.preferredgroomOrBrideAge || !params.preferredgroomOrBrideHeight ||
+        !params.description || !file) {
+        var errors = [];    
+        if(!params.name){
+            errors.push({
+                'field': 'name',
+                'message': 'name required',
+            })
+        }
+        if(!params.gender){
+            errors.push({
+                'field': 'gender',
+                'message': 'gender required',
+            })
+        }
+        if(!params.age){
+            errors.push({
+                'field': 'age',
+                'message': 'age required',
+            })
+        }
+        if(!params.height){
+            errors.push({
+                'field': 'height',
+                'message': 'height required',
+            })
+        }
+        if(!params.weight){
+            errors.push({
+                'field': 'weight',
+                'message': 'weight required',
+            })
+        }
+        if(!params.education){
+            errors.push({
+                'field': 'education',
+                'message': 'education required',
+            })
+        }
+        if(!params.profession){
+            errors.push({
+                'field': 'profession',
+                'message': 'profession required',
+            })
+        }
+        if(!params.address){
+            errors.push({
+                'field': 'address',
+                'message': 'address required',
+            })
+        }
+        if(!params.nativePlace){
+            errors.push({
+                'field': 'nativePlace',
+                'message': 'nativePlace required',
+            })
+        }
+        if(!params.workPlace){
+            errors.push({
+                'field': 'workPlace',
+                'message': 'workPlace required',
+            })
+        }
+        if(!params.preferredgroomOrBrideAge){
+            errors.push({
+                'field': 'preferredgroomOrBrideAge',
+                'message': 'preferredgroomOrBrideAge required',
+            })
+        }
+        if(!params.preferredgroomOrBrideHeight){
+            errors.push({
+                'field': 'preferredgroomOrBrideHeight',
+                'message': 'preferredgroomOrBrideHeight required',
+            })
+        }
+        if(!params.description){
+            errors.push({
+                'field': 'description',
+                'message': 'description required',
+            })
+        }
+        if(!file){
+            errors.push({
+                'field': 'description',
+                'message': 'description required',
+            })
+        }
+        return res.send({
+            success: 0,
+            errors
+        })
+    }
     console.log(params);
     console.log('params');
     var name = params.name;
