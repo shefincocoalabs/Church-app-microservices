@@ -7,14 +7,22 @@ var matrimonyConfig = config.matrimony;
 
 // *** Create Profile ***
 exports.create = async (req, res) => {
+    console.log('innn');
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
     console.log('file');
     console.log(file);
     console.log('file');
+    if (!file) {
+        return res.send({
+            success: 0,
+            message: 'image required'
+        })
+    }
     console.log('params');
     var params = req.body;
+    console.log(params);
     console.log('params');
     var name = params.name;
     var gender = params.gender;
@@ -30,18 +38,12 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
     try {
-        if(!file) {
-            return res.status(400).send({
-                success: 0,
-                message: 'image required'
-            })
-        }
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
             status: 1
         });
         if (checkAccount) {
-            return res.status(400).send({
+            return res.send({
                 success: 0,
                 message: 'You have already an account'
             })
@@ -114,7 +116,9 @@ exports.getProfile = async (req, res) => {
             workPlace: 1,
             image: 1,
             description: 1,
-            subImages: 1
+            subImages: 1,
+            preferredgroomOrBrideAge: 1,
+            preferredgroomOrBrideHeight: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
