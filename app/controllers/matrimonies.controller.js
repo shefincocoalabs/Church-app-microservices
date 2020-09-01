@@ -454,6 +454,8 @@ exports.sentRequestsList = async (req, res) => {
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.isAccepted = myRequestsList[i].isAccepted;
+            itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
         };
         var itemsCount = await OutgoingRequest.countDocuments(filter);
