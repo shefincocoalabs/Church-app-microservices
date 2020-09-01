@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
             status: 1
         });
         if (checkAccount) {
-            return res.status(400).send({
+            return res.send({
                 success: 0,
                 message: 'You have already an account'
             })
