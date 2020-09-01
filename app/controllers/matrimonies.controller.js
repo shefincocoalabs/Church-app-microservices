@@ -436,7 +436,9 @@ exports.sentRequestsList = async (req, res) => {
             status: 1
         };
         var projection = {
-            matrimonyId: 1
+            matrimonyId: 1,
+            isAccepted: 1,
+            isRejected: 1
         };
         var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
