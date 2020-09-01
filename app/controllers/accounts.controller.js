@@ -214,17 +214,24 @@ exports.sendOtp = async (req, res) => {
         message: 'Phone number is not registered with us'
       })
     }
-    var otpResponse = await otp(phone)
+    var otpResponse = await otp(phone);
+    if(otpResponse == undefined) {
+      return res.send({
+        success: 0,
+        message: 'Something went wrong while sending OTP'
+      })
+    }
     res.status(200).send({
       success: 1,
       message: 'OTP is sent to your registered phone number for verification',
       item: otpResponse
     });
   } catch (err) {
-    res.status(500).send({
-      success: 0,
-      message: err.message
-    })
+    // res.status(500).send({
+    //   success: 0,
+    //   message: err.message
+    // })
+    console.log(err);
   }
 }
 
@@ -812,26 +819,30 @@ async function otp(phone) {
   var otp = Math.floor(1000 + Math.random() * 9000);
   const apiToken = uuidv4();
   var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
-  const smsurl = await superagent.get(`http://thesmsbuddy.com/api/v1/sms/send?key=zOxsbDOn4iK8MBfNTyqxTlrcqM8WD3Ms&type=1&to=${phone}&sender=INFSMS&message=${otp} is the OTP for login to The Genesis Apostolic Church App&flash=0`);
-  const newOtp = new Otp({
-    phone: phone,
-    isUsed: false,
-    otp: otp,
-    apiToken: apiToken,
-    expiry: expiry,
-    status: 1,
-    tsCreatedAt: new Date(),
-    tsModifiedAt: null
-  });
+  try {
+    const smsurl = await superagent.get(`http://thesmsbuddy.com/api/v1/sms/send?key=zOxsbDOn4iK8MBfNTyqxTlrcqM8WD3Ms&type=1&to=${phone}&sender=INFSMS&message=${otp} is the OTP for login to The Genesis Apostolic Church App&flash=0`);
+    const newOtp = new Otp({
+      phone: phone,
+      isUsed: false,
+      otp: otp,
+      apiToken: apiToken,
+      expiry: expiry,
+      status: 1,
+      tsCreatedAt: new Date(),
+      tsModifiedAt: null
+    });
+    var saveOtp = await newOtp.save();
+    var otpResponse = {
+      phone: saveOtp.phone,
+      // otp: saveOtp.otp,
+      otp: '',
+      apiToken: saveOtp.apiToken,
+    };
+    return otpResponse
+  } catch (error) {
+    console.log(error.response.body);
+  }
 
-  var saveOtp = await newOtp.save();
-  var otpResponse = {
-    phone: saveOtp.phone,
-    // otp: saveOtp.otp,
-    otp: '',
-    apiToken: saveOtp.apiToken,
-  };
-  return otpResponse
 }
 
 function paginate(array, page_size, page_number) {
