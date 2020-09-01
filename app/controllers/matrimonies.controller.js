@@ -10,7 +10,12 @@ exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
+    console.log('file');
+    console.log(file);
+    console.log('file');
+    console.log('params');
     var params = req.body;
+    console.log('params');
     var name = params.name;
     var gender = params.gender;
     var age = params.age;
