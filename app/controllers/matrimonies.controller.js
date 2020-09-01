@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
     console.log(file);
     console.log('file');
     if (!file) {
-        return res.send({
+        return res.status(400).send({
             success: 0,
             message: 'image required'
         })
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
             status: 1
         });
         if (checkAccount) {
-            return res.send({
+            return res.status(200).send({
                 success: 0,
                 message: 'You have already an account'
             })
@@ -563,6 +563,9 @@ exports.ignoreRequest = async (req, res) => {
 exports.appendImages = async (req, res) => {
     var matrimonyId = req.params.id;
     var files = req.files;
+    console.log('files');
+    console.log(files);
+    console.log('files');
     if (files == undefined) {
         return res.status(400).send({
             success: 0,
