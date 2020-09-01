@@ -574,7 +574,9 @@ exports.appendImages = async (req, res) => {
             _id: matrimonyId,
             status: 1
         };
+        var promiseArray = [];
         for (var i = 0; i < files.length; i++) {
+            promiseArray.push(files[i]);
             var update = {
                 $push: {
                     subImages: files[i].filename
@@ -582,9 +584,11 @@ exports.appendImages = async (req, res) => {
             }
             var updateSubImages = await Matrimony.updateOne(filter, update);
         }
-        res.status(200).send({
-            success: 1,
-            message: 'Added successfully'
+        Promise.all(promiseArray).then(result => {
+            res.status(200).send({
+                success: 1,
+                message: 'Added successfully'
+            })
         })
     } catch (err) {
         res.status(500).send({
