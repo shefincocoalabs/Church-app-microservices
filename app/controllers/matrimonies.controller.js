@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
     console.log(file);
     console.log('file');
     if (!file) {
-        return res.send({
+        return res.status(400).send({
             success: 0,
             message: 'image required'
         })
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
             status: 1
         });
         if (checkAccount) {
-            return res.send({
+            return res.status(200).send({
                 success: 0,
                 message: 'You have already an account'
             })
@@ -436,7 +436,9 @@ exports.sentRequestsList = async (req, res) => {
             status: 1
         };
         var projection = {
-            matrimonyId: 1
+            matrimonyId: 1,
+            isAccepted: 1,
+            isRejected: 1
         };
         var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
@@ -452,6 +454,8 @@ exports.sentRequestsList = async (req, res) => {
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.isAccepted = myRequestsList[i].isAccepted;
+            itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
         };
         var itemsCount = await OutgoingRequest.countDocuments(filter);
@@ -574,7 +578,9 @@ exports.appendImages = async (req, res) => {
             _id: matrimonyId,
             status: 1
         };
+        var promiseArray = [];
         for (var i = 0; i < files.length; i++) {
+            promiseArray.push(files[i]);
             var update = {
                 $push: {
                     subImages: files[i].filename
@@ -582,9 +588,11 @@ exports.appendImages = async (req, res) => {
             }
             var updateSubImages = await Matrimony.updateOne(filter, update);
         }
-        res.status(200).send({
-            success: 1,
-            message: 'Added successfully'
+        Promise.all(promiseArray).then(result => {
+            res.status(200).send({
+                success: 1,
+                message: 'Added successfully'
+            })
         })
     } catch (err) {
         res.status(500).send({
