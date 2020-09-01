@@ -15,6 +15,12 @@ exports.create = async (req, res) => {
     console.log(file);
     console.log('file');
     console.log('params');
+    if (!file) {
+        return res.send({
+            success: 0,
+            message: 'image required'
+        })
+    }
     var params = req.body;
     console.log(params);
     console.log('params');
@@ -32,12 +38,6 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
     try {
-        if(!file) {
-            return res.status(400).send({
-                success: 0,
-                message: 'image required'
-            })
-        }
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
             status: 1
