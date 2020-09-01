@@ -116,7 +116,9 @@ exports.getProfile = async (req, res) => {
             workPlace: 1,
             image: 1,
             description: 1,
-            subImages: 1
+            subImages: 1,
+            preferredgroomOrBrideAge: 1,
+            preferredgroomOrBrideHeight: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
