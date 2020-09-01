@@ -7,16 +7,9 @@ var matrimonyConfig = config.matrimony;
 
 // *** Create Profile ***
 exports.create = async (req, res) => {
-    console.log('innn');
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
-    console.log('file');
-    console.log(file);
-    console.log('file');
-
-
-    console.log('params');
     var params = req.body;
     if (!params.name || !params.gender || !params.age || !params.height ||
         !params.weight || !params.education || !params.profession ||
@@ -113,8 +106,6 @@ exports.create = async (req, res) => {
             errors
         })
     }
-    console.log(params);
-    console.log('params');
     var name = params.name;
     var gender = params.gender;
     var age = params.age;
