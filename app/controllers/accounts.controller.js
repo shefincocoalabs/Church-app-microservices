@@ -8,6 +8,7 @@ const Post = require('../models/post.model');
 const Matrimnoy = require('../models/matrimony.model');
 const Donation = require('../models/donation.model');
 const PushNotification = require('../models/pushNotification.model');
+const superagent = require('superagent');
 const config = require('../../config/app.config.js');
 var otpConfig = config.otp;
 var usersConfig = config.users;
@@ -371,9 +372,9 @@ exports.editProfile = async (req, res) => {
       status: 1
     };
     var profileData = await Users.findOneAndUpdate(filter, update, {
-      new: true,
-      useFindAndModify: false
-    })
+        new: true,
+        useFindAndModify: false
+      })
       .populate([{
         path: 'church',
         select: 'name'
@@ -678,22 +679,22 @@ exports.listAllMembers = async (req, res) => {
     });
     var filter = {
       $and: [{
-        _id: {
-          $ne: userId
+          _id: {
+            $ne: userId
+          }
+        },
+        {
+          _id: {
+            $nin: familyMemberIds
+          }
+        },
+        {
+          roles: {
+            $nin: [roleId]
+          }
+        }, {
+          status: 1
         }
-      },
-      {
-        _id: {
-          $nin: familyMemberIds
-        }
-      },
-      {
-        roles: {
-          $nin: [roleId]
-        }
-      }, {
-        status: 1
-      }
       ]
     };
     var projection = {
@@ -735,8 +736,8 @@ exports.listNotification = async (req, res) => {
   var userId = identity.id;
   // var churchId = identity.church;
   let userData = await Users.findOne({
-    _id: userId
-  })
+      _id: userId
+    })
     .catch(err => {
       return {
         success: 0,
@@ -755,15 +756,15 @@ exports.listNotification = async (req, res) => {
   perPage = perPage > 0 ? perPage : notificationConfig.resultsPerPage;
   var offset = (page - 1) * perPage;
   let findCriteria = {
-    churchId : userData.church,
+    churchId: userData.church,
     status: 1
   }
   var pushNotificationList = await PushNotification.find(findCriteria)
-  .limit(perPage)
-  .skip(offset)
-  .sort({
-    'tsCreatedAt': -1
-})
+    .limit(perPage)
+    .skip(offset)
+    .sort({
+      'tsCreatedAt': -1
+    })
     .catch(err => {
       return {
         success: 0,
@@ -776,9 +777,9 @@ exports.listNotification = async (req, res) => {
   }
 
   var pushNotificationCount = await PushNotification.countDocuments(findCriteria)
-  .sort({
-    'tsCreatedAt': -1
-})
+    .sort({
+      'tsCreatedAt': -1
+    })
     .catch(err => {
       return {
         success: 0,
@@ -793,25 +794,25 @@ exports.listNotification = async (req, res) => {
   totalPages = Math.ceil(totalPages);
   var hasNextPage = page < totalPages;
   var pagination = {
-      page: page,
-      perPage: perPage,
-      hasNextPage: hasNextPage,
-      totalItems: pushNotificationCount,
-      totalPages: totalPages
+    page: page,
+    perPage: perPage,
+    hasNextPage: hasNextPage,
+    totalItems: pushNotificationCount,
+    totalPages: totalPages
   }
   return res.status(200).send({
-      success: 1,
-      pagination: pagination,
-      items: pushNotificationList
+    success: 1,
+    pagination: pagination,
+    items: pushNotificationList
   });
-  
+
 }
 
 async function otp(phone) {
   var otp = Math.floor(1000 + Math.random() * 9000);
   const apiToken = uuidv4();
   var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
-
+  const smsurl = await superagent.get(`http://thesmsbuddy.com/api/v1/sms/send?key=zOxsbDOn4iK8MBfNTyqxTlrcqM8WD3Ms&type=1&to=${phone}&sender=INFSMS&message=${otp} is the OTP for login to The Genesis Apostolic Church App&flash=0`);
   const newOtp = new Otp({
     phone: phone,
     isUsed: false,
@@ -829,7 +830,6 @@ async function otp(phone) {
     otp: saveOtp.otp,
     apiToken: saveOtp.apiToken,
   };
-
   return otpResponse
 }
 
