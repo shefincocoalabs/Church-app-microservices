@@ -357,7 +357,7 @@ exports.getMatches = async (req, res) => {
             })
         }
         var gender = findGender.gender;
-        if (gender == 'female') {
+        if (gender == 'Female') {
             gender = 'male'
         } else {
             gender = 'Female'
