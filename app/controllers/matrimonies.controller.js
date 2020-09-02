@@ -744,17 +744,19 @@ exports.myRequestsDetail = async (req, res) => {
         };
         var myRequestsDetail = await IncomingRequest.findOne(filter).populate({
             path: 'senderMatrimonyId',
-            select: 'name gender education address profession age image subImages height nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.senderMatrimonyId.id;
         itemObj.name = myRequestsDetail.senderMatrimonyId.name;
+        itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
         itemObj.age = myRequestsDetail.senderMatrimonyId.age;
         itemObj.education = myRequestsDetail.senderMatrimonyId.education;
         itemObj.address = myRequestsDetail.senderMatrimonyId.address;
         itemObj.image = myRequestsDetail.senderMatrimonyId.image;
         itemObj.subImages = myRequestsDetail.senderMatrimonyId.subImages;
         itemObj.height = myRequestsDetail.senderMatrimonyId.height;
+        itemObj.weight = myRequestsDetail.senderMatrimonyId.weight;
         itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
         itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
         itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
@@ -798,17 +800,19 @@ exports.sentRequestDetail = async (req, res) => {
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
             path: 'senderMatrimonyId',
-            select: 'name gender education address profession age image subImages height nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.senderMatrimonyId.id;
         itemObj.name = myRequestsDetail.senderMatrimonyId.name;
+        itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
         itemObj.age = myRequestsDetail.senderMatrimonyId.age;
         itemObj.education = myRequestsDetail.senderMatrimonyId.education;
         itemObj.address = myRequestsDetail.senderMatrimonyId.address;
         itemObj.image = myRequestsDetail.senderMatrimonyId.image;
         itemObj.subImages = myRequestsDetail.senderMatrimonyId.subImages;
         itemObj.height = myRequestsDetail.senderMatrimonyId.height;
+        itemObj.weight = myRequestsDetail.senderMatrimonyId.weight;
         itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
         itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
         itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
@@ -853,6 +857,7 @@ exports.matchesDetail = async (req, res) => {
         var projection = {
             name: 1,
             age: 1,
+            gender: 1,
             image: 1,
             subImages: 1,
             height: 1,

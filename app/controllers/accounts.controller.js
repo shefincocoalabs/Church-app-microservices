@@ -46,7 +46,13 @@ exports.signUp = async (req, res) => {
         message: 'Phone number already registered'
       })
     }
-    var otpResponse = await otp(phone)
+    var otpResponse = await otp(phone);
+    if(otpResponse == undefined) {
+      return res.send({
+        success: 1,
+        message: 'Something went wrong while sending OTP'
+      })
+    }
     var newUser = new Users({
       name: name,
       email: email,
@@ -217,7 +223,7 @@ exports.sendOtp = async (req, res) => {
     var otpResponse = await otp(phone);
     if(otpResponse == undefined) {
       return res.send({
-        success: 0,
+        success: 1,
         message: 'Something went wrong while sending OTP'
       })
     }
