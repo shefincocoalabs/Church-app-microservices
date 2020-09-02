@@ -233,11 +233,10 @@ exports.sendOtp = async (req, res) => {
       item: otpResponse
     });
   } catch (err) {
-    // res.status(500).send({
-    //   success: 0,
-    //   message: err.message
-    // })
-    console.log(err);
+    res.status(500).send({
+      success: 0,
+      message: err.message
+    })
   }
 }
 
