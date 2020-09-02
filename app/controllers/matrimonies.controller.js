@@ -7,105 +7,104 @@ var matrimonyConfig = config.matrimony;
 
 // *** Create Profile ***
 exports.create = async (req, res) => {
-    console.log('innn');
     var identity = req.identity.data;
     var userId = identity.id;
     var file = req.file;
-    console.log('file');
-    console.log(file);
-    console.log('file');
-
-
-    console.log('params');
     var params = req.body;
     if (!params.name || !params.gender || !params.age || !params.height ||
         !params.weight || !params.education || !params.profession ||
         !params.address || !params.nativePlace || !params.workPlace ||
         !params.preferredgroomOrBrideAge || !params.preferredgroomOrBrideHeight ||
-        !params.description || !file) {
-        var errors = [];    
-        if(!params.name){
+        !params.description || !params.phone || !file) {
+        var errors = [];
+        if (!params.name) {
             errors.push({
                 'field': 'name',
                 'message': 'name required',
             })
         }
-        if(!params.gender){
+        if (!params.gender) {
             errors.push({
                 'field': 'gender',
                 'message': 'gender required',
             })
         }
-        if(!params.age){
+        if (!params.age) {
             errors.push({
                 'field': 'age',
                 'message': 'age required',
             })
         }
-        if(!params.height){
+        if (!params.height) {
             errors.push({
                 'field': 'height',
                 'message': 'height required',
             })
         }
-        if(!params.weight){
+        if (!params.weight) {
             errors.push({
                 'field': 'weight',
                 'message': 'weight required',
             })
         }
-        if(!params.education){
+        if (!params.education) {
             errors.push({
                 'field': 'education',
                 'message': 'education required',
             })
         }
-        if(!params.profession){
+        if (!params.profession) {
             errors.push({
                 'field': 'profession',
                 'message': 'profession required',
             })
         }
-        if(!params.address){
+        if (!params.address) {
             errors.push({
                 'field': 'address',
                 'message': 'address required',
             })
         }
-        if(!params.nativePlace){
+        if (!params.nativePlace) {
             errors.push({
                 'field': 'nativePlace',
                 'message': 'nativePlace required',
             })
         }
-        if(!params.workPlace){
+        if (!params.workPlace) {
             errors.push({
                 'field': 'workPlace',
                 'message': 'workPlace required',
             })
         }
-        if(!params.preferredgroomOrBrideAge){
+        if (!params.preferredgroomOrBrideAge) {
             errors.push({
                 'field': 'preferredgroomOrBrideAge',
                 'message': 'preferredgroomOrBrideAge required',
             })
         }
-        if(!params.preferredgroomOrBrideHeight){
+        if (!params.preferredgroomOrBrideHeight) {
             errors.push({
                 'field': 'preferredgroomOrBrideHeight',
                 'message': 'preferredgroomOrBrideHeight required',
             })
         }
-        if(!params.description){
+        if (!params.description) {
             errors.push({
                 'field': 'description',
                 'message': 'description required',
             })
         }
-        if(!file){
+        if (!params.phone) {
             errors.push({
-                'field': 'description',
-                'message': 'description required',
+                'field': 'phone',
+                'message': 'phone required',
+            })
+        }
+        if (!file) {
+            errors.push({
+                'field': 'image',
+                'message': 'image required',
             })
         }
         return res.send({
@@ -113,8 +112,6 @@ exports.create = async (req, res) => {
             errors
         })
     }
-    console.log(params);
-    console.log('params');
     var name = params.name;
     var gender = params.gender;
     var age = params.age;
@@ -128,6 +125,7 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
+    var phone = params.phone;
     try {
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
@@ -154,6 +152,7 @@ exports.create = async (req, res) => {
             preferredgroomOrBrideAge: preferredgroomOrBrideAge,
             preferredgroomOrBrideHeight: preferredgroomOrBrideHeight,
             description: description,
+            phone: phone,
             createdBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -209,7 +208,8 @@ exports.getProfile = async (req, res) => {
             description: 1,
             subImages: 1,
             preferredgroomOrBrideAge: 1,
-            preferredgroomOrBrideHeight: 1
+            preferredgroomOrBrideHeight: 1,
+            phone: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
@@ -257,6 +257,7 @@ exports.editProfile = async (req, res) => {
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
+    var phone = params.phone;
     var file = req.file;
     try {
         if (Object.keys(req.body).length === 0) {
@@ -307,6 +308,9 @@ exports.editProfile = async (req, res) => {
         }
         if (description) {
             update.description = description;
+        }
+        if (phone) {
+            update.phone = phone;
         }
         update.tsModifiedAt = Date.now();
         var filter = {
@@ -369,6 +373,7 @@ exports.getMatches = async (req, res) => {
         var projection = {
             name: 1,
             image: 1,
+            subImages: 1,
             profession: 1,
             workPlace: 1,
             age: 1,
@@ -376,10 +381,10 @@ exports.getMatches = async (req, res) => {
             nativePlace: 1
         };
         var matchesList = await Matrimony.find(filter, projection, pageParams)
-        .limit(perPage)
-        .sort({
-            'tsCreatedAt': -1
-        });
+            .limit(perPage)
+            .sort({
+                'tsCreatedAt': -1
+            });
         var itemsCount = await Matrimony.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -466,11 +471,13 @@ exports.myRequests = async (req, res) => {
             status: 1
         };
         var projection = {
-            matrimonyId: 1
+            matrimonyId: 1,
+            isAccepted: 1,
+            isRejected: 1
         };
         var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
-            select: 'name profession age image height nativePlace workingPlace'
+            select: 'name address profession age image height nativePlace workPlace'
         }).limit(perPage);
         var itemsArray = [];
         for (var i = 0; i < myRequestsList.length; i++) {
@@ -478,10 +485,14 @@ exports.myRequests = async (req, res) => {
             itemObj.id = myRequestsList[i].senderMatrimonyId.id;
             itemObj.name = myRequestsList[i].senderMatrimonyId.name;
             itemObj.age = myRequestsList[i].senderMatrimonyId.age;
+            itemObj.addres = myRequestsList[i].senderMatrimonyId.address;
             itemObj.image = myRequestsList[i].senderMatrimonyId.image;
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.workPlace = myRequestsList[i].senderMatrimonyId.workPlace;
+            itemObj.isAccepted = myRequestsList[i].isAccepted;
+            itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
         };
         var itemsCount = await IncomingRequest.countDocuments(filter);
@@ -535,7 +546,7 @@ exports.sentRequestsList = async (req, res) => {
         };
         var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
-            select: 'name profession age image height nativePlace workingPlace'
+            select: 'name address profession age image height nativePlace workPlace'
         }).limit(perPage);
         var itemsArray = [];
         for (var i = 0; i < myRequestsList.length; i++) {
@@ -543,10 +554,12 @@ exports.sentRequestsList = async (req, res) => {
             itemObj.id = myRequestsList[i].senderMatrimonyId.id;
             itemObj.name = myRequestsList[i].senderMatrimonyId.name;
             itemObj.age = myRequestsList[i].senderMatrimonyId.age;
+            itemObj.address = myRequestsList[i].senderMatrimonyId.address;
             itemObj.image = myRequestsList[i].senderMatrimonyId.image;
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.workPlace = myRequestsList[i].senderMatrimonyId.workPlace;
             itemObj.isAccepted = myRequestsList[i].isAccepted;
             itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
@@ -713,6 +726,172 @@ exports.removeImage = async (req, res) => {
         res.status(200).send({
             success: 1,
             message: 'image removed successfully'
+        })
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.myRequestsDetail = async (req, res) => {
+    var id = req.params.id;
+    var isValidId = ObjectId.isValid(id);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
+    try {
+        var filter = {
+            senderMatrimonyId: id,
+            status: 1
+        };
+        var myRequestsDetail = await IncomingRequest.findOne(filter).populate({
+            path: 'senderMatrimonyId',
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+        });
+        var itemObj = {};
+        itemObj.id = myRequestsDetail.senderMatrimonyId.id;
+        itemObj.name = myRequestsDetail.senderMatrimonyId.name;
+        itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
+        itemObj.phone = myRequestsDetail.senderMatrimonyId.phone;
+        itemObj.age = myRequestsDetail.senderMatrimonyId.age;
+        itemObj.education = myRequestsDetail.senderMatrimonyId.education;
+        itemObj.address = myRequestsDetail.senderMatrimonyId.address;
+        itemObj.image = myRequestsDetail.senderMatrimonyId.image;
+        itemObj.subImages = myRequestsDetail.senderMatrimonyId.subImages;
+        itemObj.height = myRequestsDetail.senderMatrimonyId.height;
+        itemObj.weight = myRequestsDetail.senderMatrimonyId.weight;
+        itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
+        itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
+        itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
+        itemObj.preferredgroomOrBrideAge = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideAge;
+        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideHeight;
+        itemObj.description = myRequestsDetail.senderMatrimonyId.description;
+        itemObj.isAccepted = myRequestsDetail.isAccepted;
+        itemObj.isRejected = myRequestsDetail.isRejected;
+        res.status(200).send({
+            success: 1,
+            imageBase: matrimonyConfig.imageBase,
+            item: itemObj
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.sentRequestDetail = async (req, res) => {
+    var id = req.params.id;
+    var isValidId = ObjectId.isValid(id);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
+    try {
+        var filter = {
+            senderMatrimonyId: id,
+            status: 1
+        };
+        var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
+            path: 'senderMatrimonyId',
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+        });
+        var itemObj = {};
+        itemObj.id = myRequestsDetail.senderMatrimonyId.id;
+        itemObj.name = myRequestsDetail.senderMatrimonyId.name;
+        itemObj.phone = myRequestsDetail.senderMatrimonyId.phone;
+        itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
+        itemObj.age = myRequestsDetail.senderMatrimonyId.age;
+        itemObj.education = myRequestsDetail.senderMatrimonyId.education;
+        itemObj.address = myRequestsDetail.senderMatrimonyId.address;
+        itemObj.image = myRequestsDetail.senderMatrimonyId.image;
+        itemObj.subImages = myRequestsDetail.senderMatrimonyId.subImages;
+        itemObj.height = myRequestsDetail.senderMatrimonyId.height;
+        itemObj.weight = myRequestsDetail.senderMatrimonyId.weight;
+        itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
+        itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
+        itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
+        itemObj.preferredgroomOrBrideAge = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideAge;
+        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideHeight;
+        itemObj.description = myRequestsDetail.senderMatrimonyId.description;
+        itemObj.isAccepted = myRequestsDetail.isAccepted;
+        itemObj.isRejected = myRequestsDetail.isRejected;
+        res.status(200).send({
+            success: 1,
+            imageBase: matrimonyConfig.imageBase,
+            item: itemObj
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: 0,
+            message: err.message
+        })
+    }
+}
+
+exports.matchesDetail = async (req, res) => {
+    var id = req.params.id;
+    var isValidId = ObjectId.isValid(id);
+    if (!isValidId) {
+        var responseObj = {
+            success: 0,
+            status: 401,
+            errors: {
+                field: "id",
+                message: "id is invalid"
+            }
+        }
+        res.send(responseObj);
+        return;
+    }
+    try {
+        var filter = {
+            _id: id,
+            status: 1
+        };
+        var projection = {
+            name: 1,
+            age: 1,
+            phone: 1,
+            gender: 1,
+            image: 1,
+            subImages: 1,
+            height: 1,
+            weight: 1,
+            education: 1,
+            profession: 1,
+            address: 1,
+            nativePlace: 1,
+            workPlace: 1,
+            preferredgroomOrBrideAge: 1,
+            preferredgroomOrBrideHeight: 1,
+            description: 1,
+        };
+        var matchesDetail = await Matrimony.findOne(filter, projection);
+        res.status(200).send({
+            success: 1,
+            imageBase: matrimonyConfig.imageBase,
+            item: matchesDetail
         })
     } catch (err) {
         res.status(500).send({
