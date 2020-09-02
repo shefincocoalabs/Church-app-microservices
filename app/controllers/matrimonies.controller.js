@@ -309,7 +309,7 @@ exports.editProfile = async (req, res) => {
         if (description) {
             update.description = description;
         }
-        if(phone) {
+        if (phone) {
             update.phone = phone;
         }
         update.tsModifiedAt = Date.now();
