@@ -457,7 +457,9 @@ exports.myRequests = async (req, res) => {
             status: 1
         };
         var projection = {
-            matrimonyId: 1
+            matrimonyId: 1,
+            isAccepted: 1,
+            isRejected: 1
         };
         var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
@@ -473,6 +475,8 @@ exports.myRequests = async (req, res) => {
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.isAccepted = myRequestsList[i].isAccepted;
+            itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
         };
         var itemsCount = await IncomingRequest.countDocuments(filter);
