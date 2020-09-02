@@ -16,86 +16,86 @@ exports.create = async (req, res) => {
         !params.address || !params.nativePlace || !params.workPlace ||
         !params.preferredgroomOrBrideAge || !params.preferredgroomOrBrideHeight ||
         !params.description || !file) {
-        var errors = [];    
-        if(!params.name){
+        var errors = [];
+        if (!params.name) {
             errors.push({
                 'field': 'name',
                 'message': 'name required',
             })
         }
-        if(!params.gender){
+        if (!params.gender) {
             errors.push({
                 'field': 'gender',
                 'message': 'gender required',
             })
         }
-        if(!params.age){
+        if (!params.age) {
             errors.push({
                 'field': 'age',
                 'message': 'age required',
             })
         }
-        if(!params.height){
+        if (!params.height) {
             errors.push({
                 'field': 'height',
                 'message': 'height required',
             })
         }
-        if(!params.weight){
+        if (!params.weight) {
             errors.push({
                 'field': 'weight',
                 'message': 'weight required',
             })
         }
-        if(!params.education){
+        if (!params.education) {
             errors.push({
                 'field': 'education',
                 'message': 'education required',
             })
         }
-        if(!params.profession){
+        if (!params.profession) {
             errors.push({
                 'field': 'profession',
                 'message': 'profession required',
             })
         }
-        if(!params.address){
+        if (!params.address) {
             errors.push({
                 'field': 'address',
                 'message': 'address required',
             })
         }
-        if(!params.nativePlace){
+        if (!params.nativePlace) {
             errors.push({
                 'field': 'nativePlace',
                 'message': 'nativePlace required',
             })
         }
-        if(!params.workPlace){
+        if (!params.workPlace) {
             errors.push({
                 'field': 'workPlace',
                 'message': 'workPlace required',
             })
         }
-        if(!params.preferredgroomOrBrideAge){
+        if (!params.preferredgroomOrBrideAge) {
             errors.push({
                 'field': 'preferredgroomOrBrideAge',
                 'message': 'preferredgroomOrBrideAge required',
             })
         }
-        if(!params.preferredgroomOrBrideHeight){
+        if (!params.preferredgroomOrBrideHeight) {
             errors.push({
                 'field': 'preferredgroomOrBrideHeight',
                 'message': 'preferredgroomOrBrideHeight required',
             })
         }
-        if(!params.description){
+        if (!params.description) {
             errors.push({
                 'field': 'description',
                 'message': 'description required',
             })
         }
-        if(!file){
+        if (!file) {
             errors.push({
                 'field': 'description',
                 'message': 'description required',
@@ -360,17 +360,21 @@ exports.getMatches = async (req, res) => {
         var projection = {
             name: 1,
             image: 1,
+            subImages: 1,
             profession: 1,
             workPlace: 1,
             age: 1,
             height: 1,
-            nativePlace: 1
+            nativePlace: 1,
+            preferredgroomOrBrideAge: 1,
+            preferredgroomOrBrideHeight: 1,
+            description: 1 
         };
         var matchesList = await Matrimony.find(filter, projection, pageParams)
-        .limit(perPage)
-        .sort({
-            'tsCreatedAt': -1
-        });
+            .limit(perPage)
+            .sort({
+                'tsCreatedAt': -1
+            });
         var itemsCount = await Matrimony.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -463,7 +467,7 @@ exports.myRequests = async (req, res) => {
         };
         var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
-            select: 'name profession age image height nativePlace workingPlace'
+            select: 'name profession age image subImages height nativePlace workingPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         }).limit(perPage);
         var itemsArray = [];
         for (var i = 0; i < myRequestsList.length; i++) {
@@ -472,9 +476,13 @@ exports.myRequests = async (req, res) => {
             itemObj.name = myRequestsList[i].senderMatrimonyId.name;
             itemObj.age = myRequestsList[i].senderMatrimonyId.age;
             itemObj.image = myRequestsList[i].senderMatrimonyId.image;
+            itemObj.subImages = myRequestsList[i].senderMatrimonyId.subImages;
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.preferredgroomOrBrideAge = myRequestsList[i].senderMatrimonyId.preferredgroomOrBrideAge;
+            itemObj.preferredgroomOrBrideHeight = myRequestsList[i].senderMatrimonyId.preferredgroomOrBrideHeight;
+            itemObj.description = myRequestsList[i].senderMatrimonyId.description;
             itemObj.isAccepted = myRequestsList[i].isAccepted;
             itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
@@ -530,7 +538,7 @@ exports.sentRequestsList = async (req, res) => {
         };
         var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
             path: 'senderMatrimonyId',
-            select: 'name profession age image height nativePlace workingPlace'
+            select: 'name profession age image subImages height nativePlace workingPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         }).limit(perPage);
         var itemsArray = [];
         for (var i = 0; i < myRequestsList.length; i++) {
@@ -539,9 +547,13 @@ exports.sentRequestsList = async (req, res) => {
             itemObj.name = myRequestsList[i].senderMatrimonyId.name;
             itemObj.age = myRequestsList[i].senderMatrimonyId.age;
             itemObj.image = myRequestsList[i].senderMatrimonyId.image;
+            itemObj.subImages = myRequestsList[i].senderMatrimonyId.subImages;
             itemObj.height = myRequestsList[i].senderMatrimonyId.height;
             itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
             itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
+            itemObj.preferredgroomOrBrideAge = myRequestsList[i].senderMatrimonyId.preferredgroomOrBrideAge;
+            itemObj.preferredgroomOrBrideHeight = myRequestsList[i].senderMatrimonyId.preferredgroomOrBrideHeight;
+            itemObj.description = myRequestsList[i].senderMatrimonyId.description;
             itemObj.isAccepted = myRequestsList[i].isAccepted;
             itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
