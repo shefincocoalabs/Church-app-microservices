@@ -840,8 +840,7 @@ async function otp(phone) {
     var saveOtp = await newOtp.save();
     var otpResponse = {
       phone: saveOtp.phone,
-      // otp: saveOtp.otp,
-      otp: '',
+      otp: saveOtp.otp,
       apiToken: saveOtp.apiToken,
     };
     return otpResponse
