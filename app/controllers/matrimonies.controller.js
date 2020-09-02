@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
         !params.weight || !params.education || !params.profession ||
         !params.address || !params.nativePlace || !params.workPlace ||
         !params.preferredgroomOrBrideAge || !params.preferredgroomOrBrideHeight ||
-        !params.description || !file) {
+        !params.description || !params.phone || !file) {
         var errors = [];
         if (!params.name) {
             errors.push({
@@ -95,10 +95,16 @@ exports.create = async (req, res) => {
                 'message': 'description required',
             })
         }
+        if (!params.phone) {
+            errors.push({
+                'field': 'phone',
+                'message': 'phone required',
+            })
+        }
         if (!file) {
             errors.push({
-                'field': 'description',
-                'message': 'description required',
+                'field': 'image',
+                'message': 'image required',
             })
         }
         return res.send({
@@ -119,6 +125,7 @@ exports.create = async (req, res) => {
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
+    var phone = params.phone;
     try {
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
@@ -145,6 +152,7 @@ exports.create = async (req, res) => {
             preferredgroomOrBrideAge: preferredgroomOrBrideAge,
             preferredgroomOrBrideHeight: preferredgroomOrBrideHeight,
             description: description,
+            phone: phone,
             createdBy: userId,
             status: 1,
             tsCreatedAt: Date.now(),
@@ -200,7 +208,8 @@ exports.getProfile = async (req, res) => {
             description: 1,
             subImages: 1,
             preferredgroomOrBrideAge: 1,
-            preferredgroomOrBrideHeight: 1
+            preferredgroomOrBrideHeight: 1,
+            phone: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
         res.status(200).send({
@@ -248,6 +257,7 @@ exports.editProfile = async (req, res) => {
     var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
     var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
     var description = params.description;
+    var phone = params.phone;
     var file = req.file;
     try {
         if (Object.keys(req.body).length === 0) {
@@ -298,6 +308,9 @@ exports.editProfile = async (req, res) => {
         }
         if (description) {
             update.description = description;
+        }
+        if(phone) {
+            update.phone = phone;
         }
         update.tsModifiedAt = Date.now();
         var filter = {
@@ -744,12 +757,13 @@ exports.myRequestsDetail = async (req, res) => {
         };
         var myRequestsDetail = await IncomingRequest.findOne(filter).populate({
             path: 'senderMatrimonyId',
-            select: 'name gender education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.senderMatrimonyId.id;
         itemObj.name = myRequestsDetail.senderMatrimonyId.name;
         itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
+        itemObj.phone = myRequestsDetail.senderMatrimonyId.phone;
         itemObj.age = myRequestsDetail.senderMatrimonyId.age;
         itemObj.education = myRequestsDetail.senderMatrimonyId.education;
         itemObj.address = myRequestsDetail.senderMatrimonyId.address;
@@ -800,11 +814,12 @@ exports.sentRequestDetail = async (req, res) => {
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
             path: 'senderMatrimonyId',
-            select: 'name gender education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.senderMatrimonyId.id;
         itemObj.name = myRequestsDetail.senderMatrimonyId.name;
+        itemObj.phone = myRequestsDetail.senderMatrimonyId.phone;
         itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
         itemObj.age = myRequestsDetail.senderMatrimonyId.age;
         itemObj.education = myRequestsDetail.senderMatrimonyId.education;
@@ -857,6 +872,7 @@ exports.matchesDetail = async (req, res) => {
         var projection = {
             name: 1,
             age: 1,
+            phone: 1,
             gender: 1,
             image: 1,
             subImages: 1,

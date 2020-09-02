@@ -25,6 +25,7 @@ const MatrimonySchema = mongoose.Schema({
     name: String,
     gender: String,
     age: String,
+    phone: String,
     image: String,
     subImages: Array,
     height: String,
