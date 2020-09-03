@@ -360,7 +360,6 @@ exports.getMatches = async (req, res) => {
             })
         }
         var gender = findGender.gender;
-        console.log(gender);
         if (gender == 'Female') {
             gender = 'Male'
         } else {
@@ -379,11 +378,9 @@ exports.getMatches = async (req, res) => {
             senderMatrimonyId: 1,
             userMatrimonyId: 1
         });
-        console.log(findSentRequests);
         var texts = await findSentRequests.map(function (el) {
             return [el.senderMatrimonyId, el.userMatrimonyId];
         });
-        console.log(texts[0]);
         var filter = {
             _id: {
                 $nin: texts[0]
@@ -391,7 +388,6 @@ exports.getMatches = async (req, res) => {
             gender: gender,
             status: 1
         };
-        console.log(filter);
         var projection = {
             name: 1,
             image: 1,
