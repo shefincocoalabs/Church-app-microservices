@@ -360,27 +360,38 @@ exports.getMatches = async (req, res) => {
             })
         }
         var gender = findGender.gender;
+        console.log(gender);
         if (gender == 'Female') {
             gender = 'Male'
         } else {
             gender = 'Female'
         }
         var findSentRequests = await OutgoingRequest.find({
-            userMatrimonyId: matrimonyId,
+            $or: [{
+                    userMatrimonyId: matrimonyId,
+                },
+                {
+                    senderMatrimonyId: matrimonyId,
+                }
+            ],
             status: 1
         }, {
-            senderMatrimonyId: 1
+            senderMatrimonyId: 1,
+            userMatrimonyId: 1
         });
+        console.log(findSentRequests);
         var texts = await findSentRequests.map(function (el) {
-            return el.senderMatrimonyId;
+            return [el.senderMatrimonyId, el.userMatrimonyId];
         });
+        console.log(texts[0]);
         var filter = {
             _id: {
-                $nin: texts
+                $nin: texts[0]
             },
             gender: gender,
             status: 1
         };
+        console.log(filter);
         var projection = {
             name: 1,
             image: 1,
