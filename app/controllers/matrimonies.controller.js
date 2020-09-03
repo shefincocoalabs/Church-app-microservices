@@ -611,7 +611,6 @@ exports.acceptRequest = async (req, res) => {
     var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
         var updateSendRequest = await OutgoingRequest.update({
-            userId: userId,
             userMatrimonyId: senderMatrimonyId,
             senderMatrimonyId: userMatrimonyId,
             status: 1
@@ -803,7 +802,7 @@ exports.sentRequestDetail = async (req, res) => {
     }
     try {
         var filter = {
-            senderMatrimonyId: id,
+            userMatrimonyId: id,
             status: 1
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
