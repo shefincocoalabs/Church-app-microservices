@@ -672,6 +672,7 @@ exports.ignoreRequest = async (req, res) => {
 exports.appendImages = async (req, res) => {
     var matrimonyId = req.params.id;
     var files = req.files;
+    console.log(files);
     if (files == undefined) {
         return res.status(400).send({
             success: 0,
