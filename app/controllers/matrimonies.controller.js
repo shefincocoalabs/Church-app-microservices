@@ -612,8 +612,8 @@ exports.acceptRequest = async (req, res) => {
     try {
         var updateSendRequest = await OutgoingRequest.update({
             userId: userId,
-            userMatrimonyId: userMatrimonyId,
-            senderMatrimonyId: senderMatrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isAccepted: true
@@ -642,8 +642,8 @@ exports.ignoreRequest = async (req, res) => {
     try {
         var updateSendRequest = await OutgoingRequest.update({
             userId: userId,
-            userMatrimonyId: userMatrimonyId,
-            senderMatrimonyId: senderMatrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isRejected: true
