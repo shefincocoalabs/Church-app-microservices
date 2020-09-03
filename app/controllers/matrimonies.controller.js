@@ -611,8 +611,8 @@ exports.acceptRequest = async (req, res) => {
     var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
         var updateSendRequest = await OutgoingRequest.update({
-            userMatrimonyId: userMatrimonyId,
-            senderMatrimonyId: senderMatrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isAccepted: true
@@ -640,8 +640,8 @@ exports.ignoreRequest = async (req, res) => {
     var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
         var updateSendRequest = await OutgoingRequest.update({
-            userMatrimonyId: userMatrimonyId,
-            senderMatrimonyId: senderMatrimonyId,
+            userMatrimonyId: senderMatrimonyId,
+            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isRejected: true
@@ -744,7 +744,7 @@ exports.myRequestsDetail = async (req, res) => {
     }
     try {
         var filter = {
-            senderMatrimonyId: id,
+            userMatrimonyId: id,
             status: 1
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
@@ -801,7 +801,7 @@ exports.sentRequestDetail = async (req, res) => {
     }
     try {
         var filter = {
-            userMatrimonyId: id,
+            senderMatrimonyId: id,
             status: 1
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
