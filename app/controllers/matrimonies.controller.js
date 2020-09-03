@@ -467,7 +467,7 @@ exports.myRequests = async (req, res) => {
         limit: perPage
     };
     if (!matrimonyId) {
-        res.status(400).send({
+        return res.status(400).send({
             success: 0,
             message: 'matrimonyId is required'
         })
@@ -543,7 +543,7 @@ exports.sentRequestsList = async (req, res) => {
         limit: perPage
     };
     if (!matrimonyId) {
-        res.status(400).send({
+        return res.status(400).send({
             success: 0,
             message: 'matrimonyId is required'
         })

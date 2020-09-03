@@ -20,6 +20,7 @@ module.exports = (app) => {
     app.patch('/accounts/edit-profile', auth, userImageUpload.single('image'), accounts.editProfile);
     app.get('/accounts/my-posts', auth, accounts.myPosts);
     app.post('/accounts/family-members', auth,accountsValidator.validator('addFamilyMember'), accounts.addFamilyMembers);
+    app.delete('/accounts/family-members/:id/remove', auth, accounts.removeFamilyMember);
     app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
     app.get('/accounts/photos', auth, accounts.listAllPhotos);
     app.get('/accounts/members', auth, accounts.listAllMembers);
