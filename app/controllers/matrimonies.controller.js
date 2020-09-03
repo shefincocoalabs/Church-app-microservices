@@ -365,7 +365,19 @@ exports.getMatches = async (req, res) => {
         } else {
             gender = 'Female'
         }
+        var findSentRequests = await OutgoingRequest.find({
+            userMatrimonyId: matrimonyId,
+            status: 1
+        }, {
+            senderMatrimonyId: 1
+        });
+        var texts = await findSentRequests.map(function (el) {
+            return el.senderMatrimonyId;
+        });
         var filter = {
+            _id: {
+                $nin: texts
+            },
             gender: gender,
             status: 1
         };
@@ -454,9 +466,9 @@ exports.myRequests = async (req, res) => {
         skip: offset,
         limit: perPage
     };
-    if(!matrimonyId) {
+    if (!matrimonyId) {
         res.status(400).send({
-            success: 0, 
+            success: 0,
             message: 'matrimonyId is required'
         })
     }
@@ -530,7 +542,7 @@ exports.sentRequestsList = async (req, res) => {
         skip: offset,
         limit: perPage
     };
-    if(!matrimonyId) {
+    if (!matrimonyId) {
         res.status(400).send({
             success: 0,
             message: 'matrimonyId is required'
