@@ -2,6 +2,9 @@ var Church = require('../models/church.model');
 var User = require('../models/user.model');
 var Parish = require('../models/parish.model');
 var ParishWard = require('../models/parishWard.model');
+var Countries = require('../models/countries.model');
+var States = require('../models/states.model');
+var Districts = require('../models/districts.model');
 
 exports.churchList = async (req, res) => {
     try {
