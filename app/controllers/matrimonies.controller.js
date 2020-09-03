@@ -1,6 +1,5 @@
 var Matrimony = require('../models/matrimony.model');
 var OutgoingRequest = require('../models/outgoingRequests.model');
-var IncomingRequest = require('../models/incomingRequests.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var matrimonyConfig = config.matrimony;
@@ -427,18 +426,7 @@ exports.sendRequest = async (req, res) => {
             tsCreatedAt: Date.now(),
             tsModifiedAt: null
         });
-        const newIncomingRequest = new IncomingRequest({
-            userId: userId,
-            userMatrimonyId: senderMatrimonyId,
-            senderMatrimonyId: userMatrimonyId,
-            isAccepted: false,
-            isRejected: false,
-            status: 1,
-            tsCreatedAt: Date.now(),
-            tsModifiedAt: null
-        });
-        var saveNewRequestSent = newRequestSent.save();
-        var saveNewIncomingRequest = newIncomingRequest.save();
+        var saveNewRequestSent = await newRequestSent.save();
         res.status(200).send({
             success: 1,
             message: 'Your interest has been sent successfully'
@@ -456,6 +444,7 @@ exports.myRequests = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     var params = req.query;
+    var matrimonyId = params.matrimonyId;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
     var perPage = Number(params.perPage) || matrimonyConfig.resultsPerPage;
@@ -465,9 +454,15 @@ exports.myRequests = async (req, res) => {
         skip: offset,
         limit: perPage
     };
+    if(!matrimonyId) {
+        res.status(400).send({
+            success: 0, 
+            message: 'matrimonyId is required'
+        })
+    }
     try {
         var filter = {
-            userId: userId,
+            senderMatrimonyId: matrimonyId,
             status: 1
         };
         var projection = {
@@ -475,27 +470,27 @@ exports.myRequests = async (req, res) => {
             isAccepted: 1,
             isRejected: 1
         };
-        var myRequestsList = await IncomingRequest.find(filter, projection, pageParams).populate({
-            path: 'senderMatrimonyId',
+        var myRequestsList = await OutgoingRequest.find(filter, projection, pageParams).populate({
+            path: 'userMatrimonyId',
             select: 'name address profession age image height nativePlace workPlace'
         }).limit(perPage);
         var itemsArray = [];
         for (var i = 0; i < myRequestsList.length; i++) {
             var itemObj = {};
-            itemObj.id = myRequestsList[i].senderMatrimonyId.id;
-            itemObj.name = myRequestsList[i].senderMatrimonyId.name;
-            itemObj.age = myRequestsList[i].senderMatrimonyId.age;
-            itemObj.addres = myRequestsList[i].senderMatrimonyId.address;
-            itemObj.image = myRequestsList[i].senderMatrimonyId.image;
-            itemObj.height = myRequestsList[i].senderMatrimonyId.height;
-            itemObj.profession = myRequestsList[i].senderMatrimonyId.profession;
-            itemObj.nativePlace = myRequestsList[i].senderMatrimonyId.nativePlace;
-            itemObj.workPlace = myRequestsList[i].senderMatrimonyId.workPlace;
+            itemObj.id = myRequestsList[i].userMatrimonyId.id;
+            itemObj.name = myRequestsList[i].userMatrimonyId.name;
+            itemObj.age = myRequestsList[i].userMatrimonyId.age;
+            itemObj.addres = myRequestsList[i].userMatrimonyId.address;
+            itemObj.image = myRequestsList[i].userMatrimonyId.image;
+            itemObj.height = myRequestsList[i].userMatrimonyId.height;
+            itemObj.profession = myRequestsList[i].userMatrimonyId.profession;
+            itemObj.nativePlace = myRequestsList[i].userMatrimonyId.nativePlace;
+            itemObj.workPlace = myRequestsList[i].userMatrimonyId.workPlace;
             itemObj.isAccepted = myRequestsList[i].isAccepted;
             itemObj.isRejected = myRequestsList[i].isRejected;
             itemsArray.push(itemObj)
         };
-        var itemsCount = await IncomingRequest.countDocuments(filter);
+        var itemsCount = await OutgoingRequest.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -525,6 +520,7 @@ exports.sentRequestsList = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
     var params = req.query;
+    var matrimonyId = params.matrimonyId;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
     var perPage = Number(params.perPage) || matrimonyConfig.resultsPerPage;
@@ -534,9 +530,15 @@ exports.sentRequestsList = async (req, res) => {
         skip: offset,
         limit: perPage
     };
+    if(!matrimonyId) {
+        res.status(400).send({
+            success: 0,
+            message: 'matrimonyId is required'
+        })
+    }
     try {
         var filter = {
-            userId: userId,
+            userMatrimonyId: matrimonyId,
             status: 1
         };
         var projection = {
@@ -607,16 +609,6 @@ exports.acceptRequest = async (req, res) => {
             new: true,
             useFindAndModify: false
         });
-        var updateIncomingRequest = await IncomingRequest.update({
-            userMatrimonyId: senderMatrimonyId,
-            senderMatrimonyId: userMatrimonyId,
-            status: 1
-        }, {
-            isAccepted: true
-        }, {
-            new: true,
-            useFindAndModify: false
-        });
         res.status(200).send({
             success: 1,
             message: 'Request accepted successfully'
@@ -640,16 +632,6 @@ exports.ignoreRequest = async (req, res) => {
             userId: userId,
             userMatrimonyId: userMatrimonyId,
             senderMatrimonyId: senderMatrimonyId,
-            status: 1
-        }, {
-            isRejected: true
-        }, {
-            new: true,
-            useFindAndModify: false
-        });
-        var updateIncomingRequest = await IncomingRequest.update({
-            userMatrimonyId: senderMatrimonyId,
-            senderMatrimonyId: userMatrimonyId,
             status: 1
         }, {
             isRejected: true
@@ -755,28 +737,28 @@ exports.myRequestsDetail = async (req, res) => {
             senderMatrimonyId: id,
             status: 1
         };
-        var myRequestsDetail = await IncomingRequest.findOne(filter).populate({
-            path: 'senderMatrimonyId',
+        var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
+            path: 'userMatrimonyId',
             select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
         });
         var itemObj = {};
-        itemObj.id = myRequestsDetail.senderMatrimonyId.id;
-        itemObj.name = myRequestsDetail.senderMatrimonyId.name;
-        itemObj.gender = myRequestsDetail.senderMatrimonyId.gender;
-        itemObj.phone = myRequestsDetail.senderMatrimonyId.phone;
-        itemObj.age = myRequestsDetail.senderMatrimonyId.age;
-        itemObj.education = myRequestsDetail.senderMatrimonyId.education;
-        itemObj.address = myRequestsDetail.senderMatrimonyId.address;
-        itemObj.image = myRequestsDetail.senderMatrimonyId.image;
-        itemObj.subImages = myRequestsDetail.senderMatrimonyId.subImages;
-        itemObj.height = myRequestsDetail.senderMatrimonyId.height;
-        itemObj.weight = myRequestsDetail.senderMatrimonyId.weight;
-        itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
-        itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
-        itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
-        itemObj.preferredgroomOrBrideAge = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideAge;
-        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideHeight;
-        itemObj.description = myRequestsDetail.senderMatrimonyId.description;
+        itemObj.id = myRequestsDetail.userMatrimonyId.id;
+        itemObj.name = myRequestsDetail.userMatrimonyId.name;
+        itemObj.gender = myRequestsDetail.userMatrimonyId.gender;
+        itemObj.phone = myRequestsDetail.userMatrimonyId.phone;
+        itemObj.age = myRequestsDetail.userMatrimonyId.age;
+        itemObj.education = myRequestsDetail.userMatrimonyId.education;
+        itemObj.address = myRequestsDetail.userMatrimonyId.address;
+        itemObj.image = myRequestsDetail.userMatrimonyId.image;
+        itemObj.subImages = myRequestsDetail.userMatrimonyId.subImages;
+        itemObj.height = myRequestsDetail.userMatrimonyId.height;
+        itemObj.weight = myRequestsDetail.userMatrimonyId.weight;
+        itemObj.profession = myRequestsDetail.userMatrimonyId.profession;
+        itemObj.nativePlace = myRequestsDetail.userMatrimonyId.nativePlace;
+        itemObj.workPlace = myRequestsDetail.userMatrimonyId.workPlace;
+        itemObj.preferredgroomOrBrideAge = myRequestsDetail.userMatrimonyId.preferredgroomOrBrideAge;
+        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.userMatrimonyId.preferredgroomOrBrideHeight;
+        itemObj.description = myRequestsDetail.userMatrimonyId.description;
         itemObj.isAccepted = myRequestsDetail.isAccepted;
         itemObj.isRejected = myRequestsDetail.isRejected;
         res.status(200).send({
