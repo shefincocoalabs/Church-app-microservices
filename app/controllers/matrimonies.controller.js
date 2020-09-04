@@ -646,7 +646,7 @@ exports.ignoreRequest = async (req, res) => {
     var userMatrimonyId = req.body.userMatrimonyId;
     var senderMatrimonyId = req.body.senderMatrimonyId;
     try {
-        var updateSendRequest = await OutgoingRequest.update({
+        var updateSendRequest = await OutgoingRequest.updateOne({
             userMatrimonyId: senderMatrimonyId,
             senderMatrimonyId: userMatrimonyId,
             status: 1
@@ -672,9 +672,6 @@ exports.ignoreRequest = async (req, res) => {
 exports.appendImages = async (req, res) => {
     var matrimonyId = req.params.id;
     var files = req.files;
-    console.log('files');
-    console.log(files);
-    console.log('files');
     if (files == undefined) {
         return res.status(400).send({
             success: 0,
