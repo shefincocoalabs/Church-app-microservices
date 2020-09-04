@@ -379,13 +379,17 @@ exports.getMatches = async (req, res) => {
             userMatrimonyId: 1
         });
         console.log(findSentRequests);
-        var texts = await findSentRequests.map(function (el) {
-            return [el.senderMatrimonyId, el.userMatrimonyId];
+        var senderMatrimonyIdsArray = await findSentRequests.map(function (el) {
+            return el.senderMatrimonyId;
         });
-        console.log(texts);
+        var userMatrimonyIdsArray = await findSentRequests.map(function (el) {
+            return el.userMatrimonyId;
+        });
+        var idsArray = senderMatrimonyIdsArray.concat(userMatrimonyIdsArray);
+        console.log(idsArray);
         var filter = {
             _id: {
-                $nin: texts[0]
+                $nin: idsArray
             },
             gender: gender,
             status: 1
