@@ -2,6 +2,9 @@ var Urogulf = require('../models/urogulf.model');
 var UrogulfLocation = require('../models/urogulfLocations.model');
 var UrogulfNearbyLocation = require('../models/urogulfNearby.model');
 var Locations = require('../models/locations.model');
+var Countries = require('../models/countries.model');
+var States = require('../models/states.model');
+var Districts = require('../models/districts.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var urogulfConfig = config.urogulf;
@@ -140,15 +143,107 @@ exports.nearByLocations = async (req, res) => {
 exports.create = async (req, res) => {
     var identity = req.identity.data;
     var userId = identity.id;
-    var location = req.body.location;
-    var nearbyLocation = req.body.nearbyLocation;
+    var countryId = req.body.countryId;
+    var stateId = req.body.stateId;
+    var districtId = req.body.districtId;
+    var branchId = req.body.branchId;
     var message = req.body.message;
     try {
+
+        var countryCheck = await Countries.findOne({
+            _id: countryId,
+            status: 1
+        })
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while checking country',
+                    error: err
+                }
+            })
+        if (countryCheck && (countryCheck.success !== undefined) && (countryCheck.success === 0)) {
+            return res.send(countryCheck);
+        }
+        if (!countryCheck) {
+            return res.send({
+                success: 0,
+                message: 'Country not exists'
+            })
+        }
+        var stateCheck = await States.findOne({
+            _id: stateId,
+            countryId,
+            status: 1
+        })
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while checking state',
+                    error: err
+                }
+            })
+        if (stateCheck && (stateCheck.success !== undefined) && (stateCheck.success === 0)) {
+            return res.send(stateCheck);
+        }
+        if (!stateCheck) {
+            return res.send({
+                success: 0,
+                message: 'State not exists'
+            })
+        }
+        var districtCheck = await Districts.findOne({
+            _id:districtId,
+            stateId,
+            status: 1
+        })
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while checking district',
+                    error: err
+                }
+            })
+        if (districtCheck && (districtCheck.success !== undefined) && (districtCheck.success === 0)) {
+            return res.send(districtCheck);
+        }
+        if (!districtCheck) {
+            return res.send({
+                success: 0,
+                message: 'District not exists'
+            })
+        }
+        var placeCheck = await Locations.findOne({
+            _id: branchId,
+            districtId,
+            stateId,
+            countryId,
+            status: 1
+        })
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while checking place',
+                    error: err
+                }
+            })
+        if (placeCheck && (placeCheck.success !== undefined) && (placeCheck.success === 0)) {
+            return res.send(placeCheck);
+        }
+        if (!placeCheck) {
+            return res.send({
+                success: 0,
+                message: 'Place not exists'
+            })
+        }
+
+
         const newMessage = new Urogulf({
-            location: location,
-            nearbyLocation: nearbyLocation,
-            message: message,
-            userId: userId,
+            countryId,
+            stateId,
+            message,
+            districtId,
+            branchId,
+            userId,
             status: 1,
             tsCreatedAt: Date.now(),
             tsModifiedAt: null

@@ -4,8 +4,10 @@ exports.validator = (method) => {
     switch (method) {
         case 'createMessage': {
             return [
-                check('location', 'Location(id) is required').notEmpty(),
-                check('nearbyLocation', 'NearbyLocation(id) is required').notEmpty(),
+                check('countryId', 'Country(id) is required').notEmpty(),
+                check('stateId', 'State(id) is required').notEmpty(),
+                check('districtId', 'District(id) is required').notEmpty(),
+                check('branchId', 'Branch(id) is required').notEmpty(),
                 check('message', 'message is required').notEmpty(),
                 (req, res, next) => {
                     const errors = validationResult(req);

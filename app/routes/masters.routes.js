@@ -10,4 +10,5 @@ module.exports = (app) => {
     app.get('/masters/country/list', masters.countryList);
     app.get('/masters/state/:id/list', masters.stateList);
     app.get('/masters/district/:id/list', masters.districtList);
+    app.get('/masters/branch/:id/list', masters.branchList);
 };
