@@ -381,6 +381,7 @@ exports.getMatches = async (req, res) => {
         var texts = await findSentRequests.map(function (el) {
             return [el.senderMatrimonyId, el.userMatrimonyId];
         });
+        console.log(texts);
         var filter = {
             _id: {
                 $nin: texts[0]
