@@ -47,7 +47,7 @@ exports.signUp = async (req, res) => {
       })
     }
     var otpResponse = await otp(phone);
-    if(otpResponse == undefined) {
+    if (otpResponse == undefined) {
       return res.send({
         success: 0,
         message: 'Something went wrong while sending OTP'
@@ -221,7 +221,7 @@ exports.sendOtp = async (req, res) => {
       })
     }
     var otpResponse = await otp(phone);
-    if(otpResponse == undefined) {
+    if (otpResponse == undefined) {
       return res.send({
         success: 0,
         message: 'Something went wrong while sending OTP'
@@ -818,6 +818,33 @@ exports.listNotification = async (req, res) => {
     items: pushNotificationList
   });
 
+}
+
+exports.removeFamilyMember = async (req, res) => {
+  var identity = req.identity.data;
+  var userId = identity.id;
+  var id = req.params.id;
+  try {
+    var removeFamilyMember = await Users.updateOne({
+      _id: userId,
+      status: 1
+    }, {
+      $pull: {
+        familyMembers: {
+          familyMember: id
+        }
+      }
+    });
+    res.status(200).send({
+      success: 1,
+      message: 'Removed successfully'
+    })
+  } catch (err) {
+    res.status(500).send({
+      success: 0,
+      message: err.message
+    })
+  }
 }
 
 async function otp(phone) {
