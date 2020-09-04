@@ -5,6 +5,8 @@ var ParishWard = require('../models/parishWard.model');
 var Countries = require('../models/countries.model');
 var States = require('../models/states.model');
 var Districts = require('../models/districts.model');
+var Locations = require('../models/locations.model');
+var Places = require('../models/places.model');
 
 exports.churchList = async (req, res) => {
     try {
@@ -115,18 +117,18 @@ exports.getKey = async (req, res) => {
         }
         if (churchData) {
             let paymentGatewayKey = churchData.paymentGatewayKey;
-            if(paymentGatewayKey){
-            return res.send({
-                success : 1,
-                paymentGatewayKey,
-                message : 'Payment gateway key '
-            })
-        }else{
-            return res.send({
-                success: 0,
-                message: 'Online payement not enabled'
-            })
-        }
+            if (paymentGatewayKey) {
+                return res.send({
+                    success: 1,
+                    paymentGatewayKey,
+                    message: 'Payment gateway key '
+                })
+            } else {
+                return res.send({
+                    success: 0,
+                    message: 'Online payement not enabled'
+                })
+            }
         } else {
             return res.send({
                 success: 0,
@@ -235,21 +237,21 @@ exports.districtList = async (req, res) => {
             stateId,
             status: 1
         })
-        .catch(err => {
-            return {
-                success: 0,
-                message: 'Something went wrong while listing districts',
-                error: err
-            }
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while listing districts',
+                    error: err
+                }
+            })
+        if (districtData && (districtData.success !== undefined) && (districtData.success === 0)) {
+            return res.send(districtData);
+        }
+        return res.send({
+            success: 1,
+            items: districtData,
+            message: 'List districts'
         })
-    if (districtData && (districtData.success !== undefined) && (districtData.success === 0)) {
-        return res.send(districtData);
-    }
-    return res.send({
-        success: 1,
-        items: districtData,
-        message: 'List districts'
-    })
 
     } else {
         return res.send({
@@ -257,7 +259,63 @@ exports.districtList = async (req, res) => {
             message: 'Invalid state id'
         })
     }
+}
 
 
+exports.branchList = async (req, res) => {
+    var districtId = req.params.id;
+
+    var districtData = await Districts.findOne({
+        _id: districtId,
+        status: 1
+    })
+        .catch(err => {
+            return {
+                success: 0,
+                message: 'Something went wrong while checking district',
+                error: err
+            }
+        })
+    if (districtData && (districtData.success !== undefined) && (districtData.success === 0)) {
+        return res.send(districtData);
+    }
+    if (districtData) {
+        var branchData = await Locations.find({
+            districtId,
+            status: 1
+        })
+            .populate([{
+                path: 'branchId',
+            }])
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while listing branch',
+                    error: err
+                }
+            })
+        if (branchData && (branchData.success !== undefined) && (branchData.success === 0)) {
+            return res.send(branchData);
+        }
+        var branchArray = [];
+        for (let i = 0; i < branchData.length; i++) {
+            var obj = {};
+            obj.id = branchData[i].id;
+            obj.name = branchData[i].branchId.name;
+            branchArray.push(obj);
+        }
+
+        return res.send({
+            success: 1,
+            items: branchArray,
+            message: 'List branch'
+        })
+
+    } else {
+        return res.send({
+            success: 0,
+            message: 'Invalid district id'
+        })
+    }
 
 }
