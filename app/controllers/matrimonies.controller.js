@@ -378,6 +378,7 @@ exports.getMatches = async (req, res) => {
             senderMatrimonyId: 1,
             userMatrimonyId: 1
         });
+        console.log(findSentRequests);
         var texts = await findSentRequests.map(function (el) {
             return [el.senderMatrimonyId, el.userMatrimonyId];
         });
