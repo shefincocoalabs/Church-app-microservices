@@ -1,4 +1,5 @@
 var Matrimony = require('../models/matrimony.model');
+var Users = require('../models/user.model');
 var OutgoingRequest = require('../models/outgoingRequests.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
@@ -126,6 +127,17 @@ exports.create = async (req, res) => {
     var description = params.description;
     var phone = params.phone;
     try {
+        var findUser = await Users.findOne({
+            _id: userId,
+            status: 1
+        });
+        if (!findUser) {
+            return res.status(200).send({
+                success: 0,
+                message: 'User not found'
+            })
+        }
+        var churchId = findUser.church;
         var checkAccount = await Matrimony.findOne({
             createdBy: userId,
             status: 1
@@ -138,6 +150,7 @@ exports.create = async (req, res) => {
         }
         const newMatrimony = new Matrimony({
             name: name,
+            churchId: churchId,
             gender: gender,
             age: age,
             image: file.filename,
