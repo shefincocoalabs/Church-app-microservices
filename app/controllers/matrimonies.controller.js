@@ -378,7 +378,6 @@ exports.getMatches = async (req, res) => {
             senderMatrimonyId: 1,
             userMatrimonyId: 1
         });
-        console.log(findSentRequests);
         var senderMatrimonyIdsArray = await findSentRequests.map(function (el) {
             return el.senderMatrimonyId;
         });
@@ -386,7 +385,6 @@ exports.getMatches = async (req, res) => {
             return el.userMatrimonyId;
         });
         var idsArray = senderMatrimonyIdsArray.concat(userMatrimonyIdsArray);
-        console.log(idsArray);
         var filter = {
             _id: {
                 $nin: idsArray
