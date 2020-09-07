@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
     if (!params.name || !params.gender || !params.age || !params.height ||
         !params.weight || !params.education || !params.profession ||
         !params.address || !params.nativePlace || !params.workPlace ||
-        !params.preferredgroomOrBrideAge || !params.preferredgroomOrBrideHeight ||
+        !params.preferredAgeFrom || !params.preferredAgeTo || !params.preferredHeightFrom || !params.preferredHeightTo ||
         !params.description || !params.phone || !file) {
         var errors = [];
         if (!params.name) {
@@ -77,16 +77,28 @@ exports.create = async (req, res) => {
                 'message': 'workPlace required',
             })
         }
-        if (!params.preferredgroomOrBrideAge) {
+        if (!params.preferredAgeFrom) {
             errors.push({
-                'field': 'preferredgroomOrBrideAge',
-                'message': 'preferredgroomOrBrideAge required',
+                'field': 'preferredAgeFrom',
+                'message': 'preferredAgeFrom required',
             })
         }
-        if (!params.preferredgroomOrBrideHeight) {
+        if (!params.preferredAgeTo) {
             errors.push({
-                'field': 'preferredgroomOrBrideHeight',
-                'message': 'preferredgroomOrBrideHeight required',
+                'field': 'preferredAgeTo',
+                'message': 'preferredAgeTo required',
+            })
+        }
+        if (!params.preferredHeightFrom) {
+            errors.push({
+                'field': 'preferredHeightFrom',
+                'message': 'preferredHeightFrom required',
+            })
+        }
+        if (!params.preferredHeightTo) {
+            errors.push({
+                'field': 'preferredHeightTo',
+                'message': 'preferredHeightTo required',
             })
         }
         if (!params.description) {
@@ -122,8 +134,10 @@ exports.create = async (req, res) => {
     var address = params.address;
     var nativePlace = params.nativePlace;
     var workPlace = params.workPlace;
-    var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
-    var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
+    var preferredAgeFrom = params.preferredAgeFrom;
+    var preferredAgeTo = params.preferredAgeTo;
+    var preferredHeightFrom = params.preferredHeightFrom;
+    var preferredHeightTo = params.preferredHeightTo;
     var description = params.description;
     var phone = params.phone;
     try {
@@ -161,8 +175,10 @@ exports.create = async (req, res) => {
             address: address,
             nativePlace: nativePlace,
             workPlace: workPlace,
-            preferredgroomOrBrideAge: preferredgroomOrBrideAge,
-            preferredgroomOrBrideHeight: preferredgroomOrBrideHeight,
+            preferredAgeFrom: preferredAgeFrom,
+            preferredAgeTo: preferredAgeTo,
+            preferredHeightFrom: preferredHeightFrom,
+            preferredHeightTo: preferredHeightTo,
             description: description,
             phone: phone,
             createdBy: userId,
@@ -219,8 +235,10 @@ exports.getProfile = async (req, res) => {
             image: 1,
             description: 1,
             subImages: 1,
-            preferredgroomOrBrideAge: 1,
-            preferredgroomOrBrideHeight: 1,
+            preferredAgeFrom: 1,
+            preferredAgeTo: 1,
+            preferredHeightFrom: 1,
+            preferredHeightTo: 1,
             phone: 1
         };
         var profileData = await Matrimony.findOne(filter, projection);
@@ -266,8 +284,10 @@ exports.editProfile = async (req, res) => {
     var address = params.address;
     var nativePlace = params.nativePlace;
     var workPlace = params.workPlace;
-    var preferredgroomOrBrideAge = params.preferredgroomOrBrideAge;
-    var preferredgroomOrBrideHeight = params.preferredgroomOrBrideHeight;
+    var preferredAgeFrom = params.preferredAgeFrom;
+    var preferredAgeTo = params.preferredAgeTo;
+    var preferredHeightFrom = params.preferredHeightFrom;
+    var preferredHeightTo = params.preferredHeightTo;
     var description = params.description;
     var phone = params.phone;
     var file = req.file;
@@ -312,11 +332,17 @@ exports.editProfile = async (req, res) => {
         if (workPlace) {
             update.workPlace = workPlace;
         }
-        if (preferredgroomOrBrideAge) {
-            update.preferredgroomOrBrideAge = preferredgroomOrBrideAge;
+        if (preferredAgeFrom) {
+            update.preferredAgeFrom = preferredAgeFrom;
         }
-        if (preferredgroomOrBrideHeight) {
-            update.preferredgroomOrBrideHeight = preferredgroomOrBrideHeight;
+        if (preferredAgeTo) {
+            update.preferredAgeTo = preferredAgeTo;
+        }
+        if (preferredHeightFrom) {
+            update.preferredHeightFrom = preferredHeightFrom;
+        }
+        if (preferredHeightTo) {
+            update.preferredHeightTo = preferredHeightTo;
         }
         if (description) {
             update.description = description;
@@ -373,6 +399,10 @@ exports.getMatches = async (req, res) => {
             })
         }
         var gender = findGender.gender;
+        var preferredAgeFrom = findGender.preferredAgeFrom;
+        var preferredAgeTo = findGender.preferredAgeTo;
+        var preferredHeightFrom = findGender.preferredHeightFrom;
+        var preferredHeightTo = findGender.preferredHeightTo;
         if (gender == 'Female') {
             gender = 'Male'
         } else {
@@ -403,6 +433,18 @@ exports.getMatches = async (req, res) => {
                 $nin: idsArray
             },
             gender: gender,
+            preferredAgeFrom: {
+                $gte: preferredAgeFrom
+            },
+            preferredAgeTo: {
+                $lte: preferredAgeTo
+            },
+            preferredHeightFrom: {
+                $gte: preferredHeightFrom
+            },
+            preferredHeightTo: {
+                $lte: preferredHeightTo
+            },
             status: 1
         };
         var projection = {
@@ -773,7 +815,7 @@ exports.myRequestsDetail = async (req, res) => {
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
             path: 'userMatrimonyId',
-            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredAgeFrom preferredAgeTo preferredHeightFrom preferredHeightTo description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.userMatrimonyId.id;
@@ -790,8 +832,10 @@ exports.myRequestsDetail = async (req, res) => {
         itemObj.profession = myRequestsDetail.userMatrimonyId.profession;
         itemObj.nativePlace = myRequestsDetail.userMatrimonyId.nativePlace;
         itemObj.workPlace = myRequestsDetail.userMatrimonyId.workPlace;
-        itemObj.preferredgroomOrBrideAge = myRequestsDetail.userMatrimonyId.preferredgroomOrBrideAge;
-        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.userMatrimonyId.preferredgroomOrBrideHeight;
+        itemObj.preferredAgeFrom = myRequestsDetail.userMatrimonyId.preferredAgeFrom;
+        itemObj.preferredAgeTo = myRequestsDetail.userMatrimonyId.preferredAgeTo;
+        itemObj.preferredHeightFrom = myRequestsDetail.userMatrimonyId.preferredHeightFrom;
+        itemObj.preferredHeightTo = myRequestsDetail.userMatrimonyId.preferredHeightTo;
         itemObj.description = myRequestsDetail.userMatrimonyId.description;
         itemObj.isAccepted = myRequestsDetail.isAccepted;
         itemObj.isRejected = myRequestsDetail.isRejected;
@@ -830,7 +874,7 @@ exports.sentRequestDetail = async (req, res) => {
         };
         var myRequestsDetail = await OutgoingRequest.findOne(filter).populate({
             path: 'senderMatrimonyId',
-            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredgroomOrBrideAge preferredgroomOrBrideHeight description'
+            select: 'name gender phone education address profession age image subImages height weight nativePlace workPlace preferredAgeFrom preferredAgeTo preferredHeightFrom preferredHeightTo description'
         });
         var itemObj = {};
         itemObj.id = myRequestsDetail.senderMatrimonyId.id;
@@ -847,8 +891,10 @@ exports.sentRequestDetail = async (req, res) => {
         itemObj.profession = myRequestsDetail.senderMatrimonyId.profession;
         itemObj.nativePlace = myRequestsDetail.senderMatrimonyId.nativePlace;
         itemObj.workPlace = myRequestsDetail.senderMatrimonyId.workPlace;
-        itemObj.preferredgroomOrBrideAge = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideAge;
-        itemObj.preferredgroomOrBrideHeight = myRequestsDetail.senderMatrimonyId.preferredgroomOrBrideHeight;
+        itemObj.preferredAgeFrom = myRequestsDetail.senderMatrimonyId.preferredAgeFrom;
+        itemObj.preferredAgeTo = myRequestsDetail.senderMatrimonyId.preferredAgeTo;
+        itemObj.preferredHeightFrom = myRequestsDetail.senderMatrimonyId.preferredHeightFrom;
+        itemObj.preferredHeightTo = myRequestsDetail.senderMatrimonyId.preferredHeightTo;
         itemObj.description = myRequestsDetail.senderMatrimonyId.description;
         itemObj.isAccepted = myRequestsDetail.isAccepted;
         itemObj.isRejected = myRequestsDetail.isRejected;
@@ -899,8 +945,10 @@ exports.matchesDetail = async (req, res) => {
             address: 1,
             nativePlace: 1,
             workPlace: 1,
-            preferredgroomOrBrideAge: 1,
-            preferredgroomOrBrideHeight: 1,
+            preferredAgeFrom: 1,
+            preferredAgeTo: 1,
+            preferredHeightFrom: 1,
+            preferredHeightTo: 1,
             description: 1,
         };
         var matchesDetail = await Matrimony.findOne(filter, projection);
