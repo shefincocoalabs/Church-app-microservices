@@ -433,18 +433,27 @@ exports.getMatches = async (req, res) => {
                 $nin: idsArray
             },
             gender: gender,
-            preferredAgeFrom: {
-                $gte: preferredAgeFrom
-            },
-            preferredAgeTo: {
-                $lte: preferredAgeTo
-            },
-            preferredHeightFrom: {
-                $gte: preferredHeightFrom
-            },
-            preferredHeightTo: {
-                $lte: preferredHeightTo
-            },
+            $and: [{
+                    age: {
+                        $gte: preferredAgeFrom
+                    }
+                },
+                {
+                    age: {
+                        $lte: preferredAgeTo
+                    }
+                },
+                {
+                    height: {
+                        $gte: preferredHeightFrom
+                    }
+                },
+                {
+                    height: {
+                        $lte: preferredHeightTo
+                    }
+                }
+            ],
             status: 1
         };
         var projection = {
