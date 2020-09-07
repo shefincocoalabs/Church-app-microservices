@@ -41,7 +41,7 @@ exports.signUp = async (req, res) => {
     }
     var checkPhone = await Users.findOne(filter);
     if (checkPhone) {
-      return res.status(400).send({
+      return res.status(200).send({
         success: 0,
         message: 'Phone number already registered'
       })
