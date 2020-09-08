@@ -9,6 +9,8 @@ var pastersConfig = config.pasters;
 
 // *** Sermons List ***
 exports.list = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
     var params = req.query;
     var page = Number(params.page) || 1;
     page = page > 0 ? page : 1;
