@@ -51,6 +51,9 @@ exports.list = async (req, res) => {
             contentType: sermonsType,
             status: 1
         };
+        console.log('filter');
+        console.log(filter);
+        console.log('filter');
         var projection = {
             postContent: 1,
             postType: 1,
@@ -66,10 +69,16 @@ exports.list = async (req, res) => {
         }).sort({
             'tsCreatedAt': -1
         });
+        console.log('sermonsList');
+        console.log(sermonsList);
+        console.log('sermonsList');
         sermonsList = JSON.parse(JSON.stringify(sermonsList));
         for(let i = 0; i < sermonsList.length; i++){
             sermonsList[i].tsCreatedAt = new Date(sermonsList[i].tsCreatedAt);
         }
+        console.log('sermonsList');
+        console.log(sermonsList);
+        console.log('sermonsList');
         var itemsCount = await Sermons.countDocuments(filter);
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
