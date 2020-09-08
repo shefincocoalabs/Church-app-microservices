@@ -3,6 +3,7 @@ var User = require('../models/user.model');
 var constant = require('../helpers/constants');
 var buyorsellType = constant.TYPE_BUYORSELL;
 var pendingFeed = constant.PENDING_FEED;
+var approvedFeed = constant.APPROVED_FEED;
 var config = require('../../config/app.config.js');
 var buyorsellConfig = config.buyorsell;
 var usersConfig = config.users;
@@ -96,6 +97,7 @@ exports.list = async (req, res) => {
                 }
             ],
             contentType: buyorsellType,
+            feedStatus: approvedFeed,
             status: 1
         }
         var projection = {
