@@ -6,6 +6,7 @@ var config = require('../../config/app.config.js');
 var matrimonyConfig = config.matrimony;
 var constant = require('../helpers/constants');
 const pendingProfile = constant.PENDING_PROFILE;
+const approvedProfile = constant.APPROVED_PROFILE;
 
 // *** Create Profile ***
 exports.create = async (req, res) => {
@@ -457,6 +458,7 @@ exports.getMatches = async (req, res) => {
                     }
                 }
             ],
+            profileStatus: approvedProfile,
             status: 1
         };
         var projection = {
