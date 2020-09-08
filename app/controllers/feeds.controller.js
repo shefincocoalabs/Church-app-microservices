@@ -100,7 +100,7 @@ exports.list = async (req, res) => {
     search = search + '.*';
     var listPosts;
     try {
-        var findUser = User.findOne({
+        var findUser = await User.findOne({
             _id: userId,
             status: 1
         });
