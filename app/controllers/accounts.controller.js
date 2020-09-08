@@ -705,6 +705,9 @@ exports.listAllMembers = async (req, res) => {
             $nin: [roleId]
           }
         }, {
+           isVerified: true
+        },
+        {
           status: 1
         }
       ]
