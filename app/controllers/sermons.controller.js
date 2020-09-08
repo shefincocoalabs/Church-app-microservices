@@ -28,6 +28,7 @@ exports.list = async (req, res) => {
             _id: userId,
             status: 1
         });
+        console.log(findUser);
         if (!findUser) {
             return res.status(200).send({
                 success: 0,
