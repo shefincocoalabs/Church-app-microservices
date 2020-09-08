@@ -45,6 +45,7 @@ const MatrimonySchema = mongoose.Schema({
     preferredHeightTo: Number,
     description: String,
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    profileStatus : String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

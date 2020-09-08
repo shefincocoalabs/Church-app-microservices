@@ -22,6 +22,17 @@ exports.list = async (req, res) => {
     var search = params.keyword || '.*';
     search = search + '.*';
     try {
+        var findUser = User.findOne({
+            _id: userId,
+            status: 1
+        });
+        if (!findUser) {
+            return res.status(200).send({
+                success: 0,
+                message: 'User not found'
+            })
+        }
+        var churchId = findUser.church;
         var filter = {
             $or: [{
                 postType: {
@@ -34,6 +45,7 @@ exports.list = async (req, res) => {
                     $options: 'i'
                 }
             }],
+            churchId: churchId,
             contentType: sermonsType,
             status: 1
         };

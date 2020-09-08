@@ -6,5 +6,10 @@ module.exports = Object.freeze({
    PENDING_FEED : "Pending",
    APPROVED_FEED : "Approved",
    REJECTED_FEED : "Rejected",
-   SUB_ADMIN_USER : "subAdmin"
+   SUB_ADMIN_USER : "subAdmin",
+
+   PENDING_PROFILE : "Pending",
+   APPROVED_PROFILE : "Approved",
+   REJECTED_PROFILE : "Rejected",
+
 });

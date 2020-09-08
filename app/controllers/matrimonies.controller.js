@@ -4,6 +4,8 @@ var OutgoingRequest = require('../models/outgoingRequests.model');
 var ObjectId = require('mongoose').Types.ObjectId;
 var config = require('../../config/app.config.js');
 var matrimonyConfig = config.matrimony;
+var constant = require('../helpers/constants');
+const pendingProfile = constant.PENDING_PROFILE;
 
 // *** Create Profile ***
 exports.create = async (req, res) => {
@@ -182,6 +184,7 @@ exports.create = async (req, res) => {
             description: description,
             phone: phone,
             createdBy: userId,
+            profileStatus: pendingProfile,
             status: 1,
             tsCreatedAt: Date.now(),
             tsModifiedAt: null

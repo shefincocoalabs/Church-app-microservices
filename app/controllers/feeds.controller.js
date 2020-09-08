@@ -100,6 +100,17 @@ exports.list = async (req, res) => {
     search = search + '.*';
     var listPosts;
     try {
+        var findUser = User.findOne({
+            _id: userId,
+            status: 1
+        });
+        if (!findUser) {
+            return res.status(200).send({
+                success: 0,
+                message: 'User not found'
+            })
+        }
+        var churchId = findUser.church;
         var projection = {
             contentType: 1,
             name: 1,
@@ -141,6 +152,7 @@ exports.list = async (req, res) => {
                     }
                 }
             ],
+            churchId: churchId,
             feedStatus: approvedFeed,
             status: 1
         }
@@ -177,7 +189,7 @@ exports.list = async (req, res) => {
                 postContent.postType = listPosts[i].postType;
                 postContent.fileName = listPosts[i].fileName;
                 postContent.textContent = listPosts[i].textContent,
-                postContent.textStyle = listPosts[i].textStyle;
+                    postContent.textStyle = listPosts[i].textStyle;
                 postContent.user = listPosts[i].feedCreatedBy;
                 postContent.likesCount = listPosts[i].likesCount;
                 postContent.createdAt = new Date(listPosts[i].tsCreatedAt);
