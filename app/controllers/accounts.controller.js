@@ -322,10 +322,11 @@ exports.profileSummary = async (req, res) => {
       images: postImages
     })
   } catch (err) {
-    res.status(500).send({
-      success: 0,
-      message: err.message
-    })
+    // res.status(500).send({
+    //   success: 0,
+    //   message: err.message
+    // })
+    console.log(err);
   }
 }
 
