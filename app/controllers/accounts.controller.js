@@ -304,9 +304,6 @@ exports.profileSummary = async (req, res) => {
     profileDataObj.parishWard = profileData.parishWard;
 
     var familyMembers = profileData.familyMembers.slice(0, 10);
-    console.log('familyMembers');
-    console.log(familyMembers);
-    console.log('familyMembers');
     var famliyMembersArray = [];
     if (familyMembers.length > 0) {
       for (var i = 0; i < familyMembers.length; i++) {
@@ -327,11 +324,10 @@ exports.profileSummary = async (req, res) => {
       images: postImages
     })
   } catch (err) {
-    // res.status(500).send({
-    //   success: 0,
-    //   message: err.message
-    // })
-    console.log(err);
+    res.status(500).send({
+      success: 0,
+      message: err.message
+    })
   }
 }
 
