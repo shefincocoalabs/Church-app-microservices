@@ -304,6 +304,9 @@ exports.profileSummary = async (req, res) => {
     profileDataObj.parishWard = profileData.parishWard;
 
     var familyMembers = profileData.familyMembers.slice(0, 10);
+    console.log('familyMembers');
+    console.log(familyMembers);
+    console.log('familyMembers');
     var famliyMembersArray = [];
     if (familyMembers.length > 0) {
       for (var i = 0; i < familyMembers.length; i++) {
