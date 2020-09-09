@@ -24,7 +24,7 @@ module.exports = (app) => {
     app.get('/accounts/family-members', auth, accounts.listFamilyMembers);
     app.get('/accounts/photos', auth, accounts.listAllPhotos);
     app.get('/accounts/members', auth, accounts.listAllMembers);
-    app.post('/accounts/create-order', accounts.createOrder)
+    app.post('/accounts/create-order', auth, accounts.createOrder)
     app.post('/accounts/donation', auth, accountsValidator.validator('donation'), accounts.donation);
     app.get('/accounts/notification', auth, accounts.listNotification);
 };

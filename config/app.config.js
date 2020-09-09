@@ -69,6 +69,10 @@ module.exports = {
   },
   ngos: {
     imageBase: commonStorePath + 'ngo/',
+  },
+  razorPay: {
+    key_id: 'rzp_live_QbKaqOD5gPHNJW',
+    key_secret: 'mKfCwyXQ7Qs3NhajEC4oBHTp'
   }
 
 

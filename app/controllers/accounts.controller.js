@@ -14,6 +14,7 @@ var otpConfig = config.otp;
 var usersConfig = config.users;
 var feedsConfig = config.feeds;
 var notificationConfig = config.notifications;
+const razorpayConfig = config.razorPay;
 const paramsConfig = require('../../config/params.config');
 const JWT_KEY = paramsConfig.development.jwt.secret;
 var jwt = require('jsonwebtoken');
@@ -626,19 +627,32 @@ exports.listAllPhotos = async (req, res) => {
 
 // *** Create orderId ***
 exports.createOrder = (req, res) => {
+  var amount = req.body.amount;
+  amount = amount * 100;
+  if(!amount) {
+    return res.status(400).send({
+      success: 0,
+      param: 'amount',
+      message: 'amount cannot be empty'
+    })
+  }
   var instance = new Razorpay({
-    key_id: 'rzp_live_QbKaqOD5gPHNJW',
-    key_secret: 'YOUR_KEY_SECRET',
+    key_id: razorpayConfig.key_id,
+    key_secret: razorpayConfig.key_secret,
   });
   try {
     var options = {
-      amount: 50000, 
+      amount: amount, 
       currency: "INR",
       receipt: "order_rcptid_11",
       payment_capture: '0'
     };
     instance.orders.create(options, function (err, order) {
-      console.log(order);
+      res.status(200).send({
+        success: 1,
+        item: order,
+        message: 'OrderId created'
+      })
     });
   } catch (err) {
     res.status(500).send({
