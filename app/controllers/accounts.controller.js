@@ -20,6 +20,7 @@ var jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 const constant = require('../helpers/constants');
 const feedType = constant.TYPE_FEEDPOST;
+const approvedStatus = constant.APPROVED_PROFILE;
 const subAdminType = constant.SUB_ADMIN_USER;
 
 //   **** Sign-up ****
@@ -133,6 +134,7 @@ exports.verifyOtp = async (req, res) => {
         var matrimonyId;
         var findMatrimony = await Matrimnoy.findOne({
           createdBy: userId,
+          profileStatus: approvedStatus,
           status: 1
         });
         if (findMatrimony) {

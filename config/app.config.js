@@ -66,7 +66,8 @@ module.exports = {
   },
   notifications: {
     resultsPerPage: 30
-  },ngos: {
+  },
+  ngos: {
     imageBase: commonStorePath + 'ngo/',
   }
 
