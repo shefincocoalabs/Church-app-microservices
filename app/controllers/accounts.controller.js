@@ -22,7 +22,7 @@ const constant = require('../helpers/constants');
 const feedType = constant.TYPE_FEEDPOST;
 const approvedStatus = constant.APPROVED_PROFILE;
 const subAdminType = constant.SUB_ADMIN_USER;
-
+const Razorpay = require('razorpay');
 //   **** Sign-up ****
 
 exports.signUp = async (req, res) => {
@@ -134,7 +134,6 @@ exports.verifyOtp = async (req, res) => {
         var matrimonyId;
         var findMatrimony = await Matrimnoy.findOne({
           createdBy: userId,
-          profileStatus: approvedStatus,
           status: 1
         });
         if (findMatrimony) {
@@ -617,6 +616,30 @@ exports.listAllPhotos = async (req, res) => {
       pagination: pagination,
       items: postImages
     })
+  } catch (err) {
+    res.status(500).send({
+      success: 0,
+      message: err.message
+    })
+  }
+}
+
+// *** Create orderId ***
+exports.createOrder = (req, res) => {
+  var instance = new Razorpay({
+    key_id: 'rzp_live_QbKaqOD5gPHNJW',
+    key_secret: 'YOUR_KEY_SECRET',
+  });
+  try {
+    var options = {
+      amount: 50000, 
+      currency: "INR",
+      receipt: "order_rcptid_11",
+      payment_capture: '0'
+    };
+    instance.orders.create(options, function (err, order) {
+      console.log(order);
+    });
   } catch (err) {
     res.status(500).send({
       success: 0,
