@@ -305,13 +305,15 @@ exports.profileSummary = async (req, res) => {
 
     var familyMembers = profileData.familyMembers.slice(0, 10);
     var famliyMembersArray = [];
-    for (var i = 0; i < familyMembers.length; i++) {
-      var familyMembersObj = {};
-      familyMembersObj.id = familyMembers[i].familyMember.id;
-      familyMembersObj.name = familyMembers[i].familyMember.name;
-      familyMembersObj.image = familyMembers[i].familyMember.image;
-      familyMembersObj.relation = familyMembers[i].relation
-      famliyMembersArray.push(familyMembersObj);
+    if (familyMembers.length > 0) {
+      for (var i = 0; i < familyMembers.length; i++) {
+        var familyMembersObj = {};
+        familyMembersObj.id = familyMembers[i].familyMember.id;
+        familyMembersObj.name = familyMembers[i].familyMember.name;
+        familyMembersObj.image = familyMembers[i].familyMember.image;
+        familyMembersObj.relation = familyMembers[i].relation
+        famliyMembersArray.push(familyMembersObj);
+      }
     }
     res.status(200).send({
       success: 1,
@@ -706,7 +708,7 @@ exports.listAllMembers = async (req, res) => {
             $nin: [roleId]
           }
         }, {
-           isVerified: true
+          isVerified: true
         },
         {
           status: 1
@@ -824,7 +826,7 @@ exports.listNotification = async (req, res) => {
 
 }
 
-exports.removeFamilyMember = async(req, res) => {
+exports.removeFamilyMember = async (req, res) => {
   var identity = req.identity.data;
   var userId = identity.id;
   var id = req.params.id;
