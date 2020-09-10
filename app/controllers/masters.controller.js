@@ -96,17 +96,11 @@ exports.getKey = async (req, res) => {
                 error: err
             }
         })
-    console.log('userData'); 
-    console.log(userData);
-    console.log('userData');
     if (userData && (userData.success !== undefined) && (userData.success === 0)) {
         return res.send(userData);
     }
     if (userData) {
         let churchId = userData.church;
-        console.log('churchId');
-        console.log(churchId);
-        console.log('churchId');
         let churchData = await Church.findOne({
             _id: churchId,
             status: 1
@@ -118,15 +112,9 @@ exports.getKey = async (req, res) => {
                     error: err
                 }
             })
-            console.log('churchData');
-            console.log(churchData);
-            console.log('churchData');
         if (churchData && (churchData.success !== undefined) && (churchData.success === 0)) {
             return res.send(churchData);
         }
-        console.log('churchData');
-        console.log(churchData);
-        console.log('churchData');
         if (churchData) {
             let paymentGatewayKey = churchData.paymentGatewayKey;
             if (paymentGatewayKey) {
