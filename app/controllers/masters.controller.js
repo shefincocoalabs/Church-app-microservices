@@ -104,6 +104,9 @@ exports.getKey = async (req, res) => {
     }
     if (userData) {
         let churchId = userData.church;
+        console.log('churchId');
+        console.log(churchId);
+        console.log('churchId');
         let churchData = await Church.findOne({
             _id: churchId,
             status: 1
