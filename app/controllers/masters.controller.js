@@ -115,6 +115,9 @@ exports.getKey = async (req, res) => {
                     error: err
                 }
             })
+            console.log('churchData');
+            console.log(churchData);
+            console.log('churchData');
         if (churchData && (churchData.success !== undefined) && (churchData.success === 0)) {
             return res.send(churchData);
         }
