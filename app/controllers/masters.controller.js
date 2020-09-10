@@ -115,6 +115,9 @@ exports.getKey = async (req, res) => {
         if (churchData && (churchData.success !== undefined) && (churchData.success === 0)) {
             return res.send(churchData);
         }
+        console.log('churchData');
+        console.log(churchData);
+        console.log('churchData');
         if (churchData) {
             let paymentGatewayKey = churchData.paymentGatewayKey;
             if (paymentGatewayKey) {
