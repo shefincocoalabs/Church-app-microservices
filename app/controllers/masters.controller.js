@@ -96,6 +96,9 @@ exports.getKey = async (req, res) => {
                 error: err
             }
         })
+    console.log('userData'); 
+    console.log(userData);
+    console.log('userData');
     if (userData && (userData.success !== undefined) && (userData.success === 0)) {
         return res.send(userData);
     }
