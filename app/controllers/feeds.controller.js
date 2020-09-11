@@ -165,6 +165,13 @@ exports.list = async (req, res) => {
         }]).limit(perPage).sort({
             'tsCreatedAt': -1
         });
+        var userLikeStatus = await Post.find({
+            likes: {
+                $elemMatch: {
+                    userId: userId
+                }
+            }
+        });
         var postContentArray = [];
         for (var i = 0; i < listPosts.length; i++) {
             var postContent = {};
@@ -193,6 +200,11 @@ exports.list = async (req, res) => {
                 postContent.user = listPosts[i].feedCreatedBy;
                 postContent.likesCount = listPosts[i].likesCount;
                 postContent.createdAt = new Date(listPosts[i].tsCreatedAt);
+                if (userLikeStatus.filter(data => data.id === listPosts[i].id).length > 0) {
+                    postContent.likeStatus = true;
+                } else {
+                    postContent.likeStatus = false;
+                }
             } else {
                 continue;
             }
