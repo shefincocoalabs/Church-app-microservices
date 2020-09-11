@@ -168,7 +168,8 @@ exports.list = async (req, res) => {
         var userLikeStatus = await Post.find({
             likes: {
                 $elemMatch: {
-                    userId: userId
+                    userId: userId,
+                    likeStatus: true
                 }
             }
         });
