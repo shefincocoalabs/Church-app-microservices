@@ -677,7 +677,7 @@ exports.donation = async (req, res) => {
       _id: userId,
       status: 1
     });
-    var churchId = findUser.churchId;
+    var churchId = findUser.church;
     const newPayment = new Donation({
       userId: userId,
       churchId: churchId,
