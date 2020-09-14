@@ -1,6 +1,7 @@
 var Group = require('../models/group.model');
 var User = require('../models/user.model');
 var UserRole = require('../models/userRole.model');
+var GroupMessage = require('../models/groupMessage.model');
 var config = require('../../config/app.config.js');
 var ObjectId = require('mongoose').Types.ObjectId;
 var groupConfig = config.groups;
@@ -71,13 +72,13 @@ exports.list = async (req, res) => {
     try {
         var filter = {
             $or: [{
-                    createdBy: userId
-                },
-                {
-                    members: {
-                        $in: userId
-                    }
+                createdBy: userId
+            },
+            {
+                members: {
+                    $in: userId
                 }
+            }
             ],
             status: 1
         };
@@ -406,6 +407,81 @@ exports.allMembers = async (req, res) => {
         })
     }
 }
+
+exports.chatsList = async (req, res) => {
+    var identity = req.identity.data;
+    var userId = identity.id;
+    var params = req.query;
+    var groupId = req.params.id;
+    var groupData = await Group.findOne({
+        _id: groupId,
+        status: 1
+    })
+        .catch(err => {
+            return {
+                success: 0,
+                message: 'Something went wrong while getting group data',
+                error: err
+            }
+        })
+    if (groupData && (groupData.success !== undefined) && (groupData.success === 0)) {
+        return res.send(groupData);
+    }
+    if (groupData) {
+        var page = Number(params.page) || 1;
+        page = page > 0 ? page : 1;
+        var perPage = Number(params.perPage) || groupConfig.resultsPerPage;
+        perPage = perPage > 0 ? perPage : groupConfig.resultsPerPage;
+        var offset = (page - 1) * perPage;
+        var findCriteria = {
+            groupId,
+            status: 1
+        };
+        
+        var chatList = await GroupMessage.find(findCriteria)
+            .limit(perPage)
+            .skip(offset)
+            .sort({
+                'tsCreatedAt': -1
+            })
+
+        var totalMessageCount = await GroupMessage.countDocuments(findCriteria)
+            .catch(err => {
+                return {
+                    success: 0,
+                    message: 'Something went wrong while getting totalMessageCount',
+                    error: err
+                }
+            })
+        if (totalMessageCount && (totalMessageCount.success !== undefined) && (totalMessageCount.success === 0)) {
+            return res.send(totalMessageCount);
+        }
+        var totalPages = totalMessageCount / perPage;
+        totalPages = Math.ceil(totalPages);
+        var hasNextPage = page < totalPages;
+        var pagination = {
+            page,
+            perPage,
+            hasNextPage,
+            totalItems: totalMessageCount,
+            totalPages
+        }
+        return res.status(200).send({
+            success: 1,
+            pagination,
+            items: chatList,
+            message: 'List group chats'
+        })
+
+    } else {
+        return res.send({
+            success: 0,
+            message: 'Invalid group ID'
+        })
+    }
+
+}
+
 
 function paginate(array, page_size, page_number) {
     return array.slice((page_number - 1) * page_size, page_number * page_size);

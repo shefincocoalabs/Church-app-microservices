@@ -20,4 +20,6 @@ module.exports = (app) => {
     app.post('/groups/create', auth ,groupImageUpload.single('image'), groupsValidator.validator('createGroup'), groups.create);
     app.patch('/groups/:id/append-members', auth,groupsValidator.validator('append-members'), groups.appendMembers);
     app.patch('/groups/:id/remove-member', auth, groupsValidator.validator('remove-member'), groups.removeMember);
+    app.get('/groups/:id/chatslist', auth, groups.chatsList);
+
 };
