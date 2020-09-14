@@ -456,6 +456,11 @@ exports.chatsList = async (req, res) => {
         if (totalMessageCount && (totalMessageCount.success !== undefined) && (totalMessageCount.success === 0)) {
             return res.send(totalMessageCount);
         }
+        // copy x
+        var list = Object.assign({}, chatList);
+     
+        chatList.reverse();
+
         var totalPages = totalMessageCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
