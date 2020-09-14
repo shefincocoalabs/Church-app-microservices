@@ -132,10 +132,7 @@ exports.payments = async (req, res) => {
             status: 1
         }, {
             $push: {
-                charityPayments: {
-                    paymentId: savePayment._id,
-                    userId: userId
-                }
+                charityPayments: savePayment._id
             }
         });
         res.status(200).send({
