@@ -34,6 +34,16 @@ const CharitiesSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Church'
     },
+    charityPayments: [{
+        paymentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'CharityPayment'
+        },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    }],
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

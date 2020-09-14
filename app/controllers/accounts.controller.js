@@ -24,8 +24,8 @@ const feedType = constant.TYPE_FEEDPOST;
 const approvedStatus = constant.APPROVED_PROFILE;
 const subAdminType = constant.SUB_ADMIN_USER;
 const Razorpay = require('razorpay');
-//   **** Sign-up ****
 
+//   **** Sign-up ****
 exports.signUp = async (req, res) => {
   var name = req.body.name;
   var email = req.body.email;
@@ -210,17 +210,20 @@ exports.verifyOtp = async (req, res) => {
 //  *** Send OTP for already registered user ***
 exports.sendOtp = async (req, res) => {
   var phone = req.body.phone;
+  var type = req.query.type;
   try {
-    var checkPhone = await Users.findOne({
-      phone: phone,
-      isVerified: true,
-      status: 1
-    });
-    if (!checkPhone) {
-      return res.status(200).send({
-        success: 0,
-        message: 'Phone number is not registered with us'
-      })
+    if (type === 'login') {
+      var checkPhone = await Users.findOne({
+        phone: phone,
+        isVerified: true,
+        status: 1
+      });
+      if (!checkPhone) {
+        return res.status(200).send({
+          success: 0,
+          message: 'Phone number is not registered with us'
+        })
+      }
     }
     var otpResponse = await otp(phone);
     if (otpResponse == undefined) {
@@ -629,7 +632,7 @@ exports.listAllPhotos = async (req, res) => {
 exports.createOrder = (req, res) => {
   var amount = req.body.amount;
   amount = amount * 100;
-  if(!amount) {
+  if (!amount) {
     return res.status(400).send({
       success: 0,
       param: 'amount',
@@ -642,7 +645,7 @@ exports.createOrder = (req, res) => {
   });
   try {
     var options = {
-      amount: amount, 
+      amount: amount,
       currency: "INR",
       receipt: "order_rcptid_11",
       payment_capture: '0'
