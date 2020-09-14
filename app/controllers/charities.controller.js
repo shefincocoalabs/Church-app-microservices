@@ -19,7 +19,7 @@ exports.list = async (req, res) => {
     };
     try {
         var filter = {
-            status : 1
+            status: 1
         };
         var projection = {
             caption: 1,
@@ -87,7 +87,7 @@ exports.detail = async (req, res) => {
             address: 1
         };
         var charityDetail = await Charity.findOne(filter, projection);
-        var percentageObj = await getCalculatePercentage(id,parseFloat(charityDetail.fund));
+        var percentageObj = await getCalculatePercentage(id, parseFloat(charityDetail.fund));
         charityDetail = JSON.parse(JSON.stringify(charityDetail));
         charityDetail.percentage = percentageObj.percentage;
         charityDetail.neededAmount = percentageObj.neededAmount;
@@ -127,6 +127,17 @@ exports.payments = async (req, res) => {
             tsModifiedAt: null
         });
         var savePayment = await newPayment.save();
+        var saveToCharity = await Charity.update({
+            _id: charityId,
+            status: 1
+        }, {
+            $push: {
+                charityPayments: {
+                    paymentId: savePayment._id,
+                    userId: userId
+                }
+            }
+        });
         res.status(200).send({
             success: 1,
             message: 'Payment successfully added'
@@ -139,40 +150,40 @@ exports.payments = async (req, res) => {
     }
 }
 
-async function getCalculatePercentage(charityId,totalFund){
+async function getCalculatePercentage(charityId, totalFund) {
     var percentageObj = {};
     let charityPaymentData = await CharityPayment.find({
-        charityId,
-        paidStatus : true,
-        status : 1
-    },{
-        amount : 1
-    })
-    .catch(err => {
-        return {
-            success: 0,
-            message: 'Something went wrong while getting charity payment data',
-            error: err
-        }
-    })
-if (charityPaymentData && (charityPaymentData.success !== undefined) && (charityPaymentData.success === 0)) {
-    return res.send(charityPaymentData);
-}
-if(charityPaymentData){
-    var totalReceivedAmount = 0;
-    for(let i = 0; i < charityPaymentData.length; i++){
-        var amount = charityPaymentData[i].amount;
-        totalReceivedAmount = totalReceivedAmount + parseFloat(amount);
+            charityId,
+            paidStatus: true,
+            status: 1
+        }, {
+            amount: 1
+        })
+        .catch(err => {
+            return {
+                success: 0,
+                message: 'Something went wrong while getting charity payment data',
+                error: err
+            }
+        })
+    if (charityPaymentData && (charityPaymentData.success !== undefined) && (charityPaymentData.success === 0)) {
+        return res.send(charityPaymentData);
     }
-    var percentage  = (totalReceivedAmount/totalFund);
-    var percentageData = percentage * 100;
-    percentageObj.percentage = Math.round(percentageData * 10) / 10;
-    percentageObj.neededAmount = (totalFund - totalReceivedAmount);
+    if (charityPaymentData) {
+        var totalReceivedAmount = 0;
+        for (let i = 0; i < charityPaymentData.length; i++) {
+            var amount = charityPaymentData[i].amount;
+            totalReceivedAmount = totalReceivedAmount + parseFloat(amount);
+        }
+        var percentage = (totalReceivedAmount / totalFund);
+        var percentageData = percentage * 100;
+        percentageObj.percentage = Math.round(percentageData * 10) / 10;
+        percentageObj.neededAmount = (totalFund - totalReceivedAmount);
 
 
-}else{
-    percentageObj.percentage = 0;
-    percentageObj.neededAmount = totalFund;
-}
-return percentageObj;
+    } else {
+        percentageObj.percentage = 0;
+        percentageObj.neededAmount = totalFund;
+    }
+    return percentageObj;
 }
