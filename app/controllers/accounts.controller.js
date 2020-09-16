@@ -296,6 +296,16 @@ exports.profileSummary = async (req, res) => {
         createdAt: new Date(postedData[i].tsCreatedAt)
       })
     }
+    var matrimonyId;
+    var findMatrimony = await Matrimnoy.findOne({
+      createdBy: userId,
+      status: 1
+    });
+    if (findMatrimony) {
+      matrimonyId = findMatrimony._id;
+    } else {
+      matrimonyId = null;
+    }
     var profileDataObj = {};
     profileDataObj.imageBase = usersConfig.imageBase;
     profileDataObj.name = profileData.name;
@@ -307,7 +317,7 @@ exports.profileSummary = async (req, res) => {
     profileDataObj.church = profileData.church;
     profileDataObj.parish = profileData.parish;
     profileDataObj.parishWard = profileData.parishWard;
-
+    profileDataObj.matrimonyId = matrimonyId;
     var familyMembers = profileData.familyMembers.slice(0, 10);
     var famliyMembersArray = [];
     if (familyMembers.length > 0) {
@@ -404,6 +414,16 @@ exports.editProfile = async (req, res) => {
         path: 'parishWard',
         select: 'name'
       }]);
+    var matrimonyId;
+    var findMatrimony = await Matrimnoy.findOne({
+      createdBy: userId,
+      status: 1
+    });
+    if (findMatrimony) {
+      matrimonyId = findMatrimony._id;
+    } else {
+      matrimonyId = null;
+    }
     var profileDataObj = {};
     profileDataObj.imageBase = usersConfig.imageBase;
     profileDataObj.name = profileData.name;
@@ -415,6 +435,7 @@ exports.editProfile = async (req, res) => {
     profileDataObj.church = profileData.church;
     profileDataObj.parish = profileData.parish;
     profileDataObj.parishWard = profileData.parishWard;
+    profileDataObj.matrimonyId = matrimonyId;
     res.status(200).send({
       success: 1,
       profileData: profileDataObj,
