@@ -777,6 +777,9 @@ exports.listAllMembers = async (req, res) => {
         }
       ]
     };
+    if(params.search){
+      filter.name  =  { $regex: new RegExp(params.search, "i") } 
+    }
     var projection = {
       name: 1,
       email: 1,
@@ -786,6 +789,7 @@ exports.listAllMembers = async (req, res) => {
     var members = await Users.find(filter, projection, pageParams).limit(perPage).sort({
       'tsCreatedAt': -1
     });
+
     var itemsCount = await Users.countDocuments(filter);
     totalPages = itemsCount / perPage;
     totalPages = Math.ceil(totalPages);
