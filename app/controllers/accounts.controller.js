@@ -210,7 +210,7 @@ exports.verifyOtp = async (req, res) => {
 //  *** Send OTP for already registered user ***
 exports.sendOtp = async (req, res) => {
   var phone = req.body.phone;
-  var type = req.query.type;
+  var type = req.body.type; 
   try {
     if (type === 'login') {
       var checkPhone = await Users.findOne({
