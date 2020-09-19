@@ -308,6 +308,7 @@ exports.profileSummary = async (req, res) => {
     }
     var profileDataObj = {};
     profileDataObj.imageBase = usersConfig.imageBase;
+    profileDataObj.id = profileData.id;
     profileDataObj.name = profileData.name;
     profileDataObj.email = profileData.email;
     profileDataObj.phone = profileData.phone;
